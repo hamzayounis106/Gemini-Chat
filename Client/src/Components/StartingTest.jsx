@@ -14,7 +14,7 @@ function StartingTest() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("/api/test");
+        const res = await axios.get("/api/geminiRoutes/test");
         console.log(res.data.history);
         setResMessage(res.data.text || ""); // Make sure it's a string
       } catch (error) {
@@ -24,7 +24,7 @@ function StartingTest() {
     };
 
     // Uncomment this to fetch data on component mount
-    // fetchData();
+    fetchData();
   }, []);
 
   const handlePromptSend = async (e) => {
@@ -32,7 +32,7 @@ function StartingTest() {
     setPrompt("");
 
     try {
-      const res = await axios.post("/api/sendPrompt", { prompt });
+      const res = await axios.post("/api/geminiRoutes/sendPrompt", { prompt });
       console.log(res.data);
 
       setResMessage(res.data.text || ""); // Make sure it's a string
