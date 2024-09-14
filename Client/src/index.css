@@ -3,59 +3,64 @@
 @tailwind utilities;
 
 * {
-    font-family: "Red Hat Display", sans-serif;
+  font-family: "Red Hat Display", sans-serif;
 }
 /* For WebKit browsers */
 .oldData::-webkit-scrollbar {
-    width: 8px; /* Adjust the width as needed */
-  }
-  
-  .oldData::-webkit-scrollbar-track {
-    background: #000000; /* Background of the scrollbar track */
-  }
-  
-  .oldData::-webkit-scrollbar-thumb {
-    background: #516a8d; /* Color of the scrollbar thumb */
-    border-radius: 10px; /* Rounded corners for the scrollbar thumb */
-    
-  }
-  
-  .oldData::-webkit-scrollbar-thumb:hover {
-    background: #516a8d; /* Color of the scrollbar thumb on hover */
-  }
-  
-  /* For Firefox */
-  .oldData {
-    scrollbar-width: thin; /* "auto" or "thin" */
-    scrollbar-color: #516a8d #75757500; /* thumb and track color */
-  }
-  .markdown-body pre code{
-    display: inline-block;
-    max-width: 100%;
-    overflow-x: auto;
-  }
-  .markdown-body{
-    max-width: 100%; bottom: 0;
-    overflow-x: auto;
-  }
-  .markdown-body::-webkit-scrollbar {
-    width: 8px; /* Adjust the width as needed */
-  }
+  width: 8px; /* Adjust the width as needed */
+}
+
+.oldData::-webkit-scrollbar-track {
+  background: #000000; /* Background of the scrollbar track */
+}
+
+.oldData::-webkit-scrollbar-thumb {
+  background: #516a8d; /* Color of the scrollbar thumb */
+  border-radius: 10px; /* Rounded corners for the scrollbar thumb */
+}
+
+.oldData::-webkit-scrollbar-thumb:hover {
+  background: #516a8d; /* Color of the scrollbar thumb on hover */
+}
+
+/* For Firefox */
+.oldData {
+  scrollbar-width: thin; /* "auto" or "thin" */
+  scrollbar-color: #516a8d #75757500; /* thumb and track color */
+}
+.markdown-body pre code {
+  display: inline-block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+.markdown-body {
+  max-width: 100%;
+  bottom: 0;
+  overflow-x: auto;
+}
+.markdown-body::-webkit-scrollbar {
+  width: 8px; /* Adjust the width as needed */
+}
 /* HTML: <div class="loader"></div> */
 .loader {
-  width: 60px;  
+  width: 60px;
   aspect-ratio: 2;
-  --_g: no-repeat radial-gradient(circle closest-side,#ffffff 90%,#0000);
-  background: 
-    var(--_g) 0%   50%,
-    var(--_g) 50%  50%,
-    var(--_g) 100% 50%;
-  background-size: calc(100%/3) 50%;
+  --_g: no-repeat radial-gradient(circle closest-side, #ffffff 90%, #0000);
+  background: var(--_g) 0% 50%, var(--_g) 50% 50%, var(--_g) 100% 50%;
+  background-size: calc(100% / 3) 50%;
   animation: l3 1s infinite linear;
 }
 @keyframes l3 {
-    20%{background-position:0%   0%, 50%  50%,100%  50%}
-    40%{background-position:0% 100%, 50%   0%,100%  50%}
-    60%{background-position:0%  50%, 50% 100%,100%   0%}
-    80%{background-position:0%  50%, 50%  50%,100% 100%}
+  20% {
+    background-position: 0% 0%, 50% 50%, 100% 50%;
+  }
+  40% {
+    background-position: 0% 100%, 50% 0%, 100% 50%;
+  }
+  60% {
+    background-position: 0% 50%, 50% 100%, 100% 0%;
+  }
+  80% {
+    background-position: 0% 50%, 50% 50%, 100% 100%;
+  }
 }

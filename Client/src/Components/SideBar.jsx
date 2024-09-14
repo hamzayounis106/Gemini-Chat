@@ -1,5 +1,4 @@
 import React from "react";
-import ProfileBar from "./ProfileBar";
 import ChatNamebar from "./ChatNamebar";
 import { IoMdAddCircle } from "react-icons/io";
 function SideBar() {
@@ -16,7 +15,7 @@ function SideBar() {
             </div>
           </div>
         </div>
-        <div className="flex oldData  overflow-hidden   hover:overflow-y-auto  h-[70%] flex-col items-center justify-start w-full gap-3 ">
+        <div className="flex oldData  overflow-hidden   hover:overflow-y-auto  h-[90%] flex-col items-center justify-start w-full gap-3 ">
           <ChatNamebar title={"Learn React Basics"} />
           <ChatNamebar title={"Build a Portfolio with HTML"} />
           <ChatNamebar title={"Advanced CSS Techniques"} />
@@ -38,7 +37,6 @@ function SideBar() {
           <ChatNamebar title={"Understanding Flexbox Layout"} />
           <ChatNamebar title={"Mastering Grid Layout in CSS"} />
         </div>
-        <ProfileBar pfp="/pfp.png" modle={"Free"} name={"Hamza"} />
       </div>
     </>
   );

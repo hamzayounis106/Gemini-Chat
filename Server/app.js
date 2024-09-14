@@ -1,13 +1,15 @@
 import env from "dotenv";
 import cors from "cors";
 import express from "express";
-import {connectDb} from "./db/connectionsdb.js";
+import { connectDb } from "./db/connectionsdb.js";
 import authRoutes from "./Routes/auth.route.js";
 import geminiRoutes from "./Routes/gemini.route.js";
+import cookieParser from "cookie-parser";
 env.config();
 
 const app = express();
 //Middlewares
+app.use(cookieParser());
 app.use(express.json());
 app.use(
   cors({

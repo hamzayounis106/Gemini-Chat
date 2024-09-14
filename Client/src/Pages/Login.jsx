@@ -1,18 +1,9 @@
-import React, { useState } from "react";
-import {
-  GoogleOAuthProvider,
-  GoogleLogin,
-  googleLogout,
-} from "@react-oauth/google";
+import React from "react";
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 
 import { jwtDecode } from "jwt-decode";
 function Login() {
-  const [loginData, setLoginData] = useState(
-    localStorage.getItem("loginData")
-      ? JSON.parse(localStorage.getItem("loginData"))
-      : null
-  );
   const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   const handelLogin = async (googleData) => {
     const userData = jwtDecode(googleData);
@@ -22,11 +13,15 @@ function Login() {
         "http://localhost:3000/api/authRoutes/auth/google/callback",
         {
           credential: googleData,
+        },
+        {
+          withCredentials: true,
         }
       );
 
       if (res) {
-        console.log(res);
+        console.log(res.data);
+        window.location.reload();
       }
     } catch (error) {
       console.log(error);
@@ -34,7 +29,7 @@ function Login() {
   };
 
   return (
-    <div className="w-[600px] bg-white">
+    <div className="absolute flex items-center justify-between top-5 right-5">
       <button type="button">
         <GoogleOAuthProvider clientId={CLIENT_ID}>
           <GoogleLogin

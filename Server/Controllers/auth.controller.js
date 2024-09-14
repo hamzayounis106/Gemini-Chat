@@ -1,6 +1,7 @@
 import env from "dotenv";
 import { OAuth2Client } from "google-auth-library";
 import User from "../Models/User.model.js";
+import { generateAndSendAuthToken } from "../Utils/generateAndSendToken.js";
 env.config();
 const GoogleClientId = process.env.GoogleClientId;
 const client = new OAuth2Client();
@@ -9,11 +10,20 @@ export const login = async (req, res) => {
   res.send("login");
 };
 export const log_out = async (req, res) => {
-  res.send("log out");
+  const authToken = req.cookies.auth_token;
+  if (authToken) {
+    console.log(authToken);
+    res.clearCookie("auth_token", { path: "/" });
+    return res
+      .status(200)
+      .json({ success: true, message: "Logged out successfully" });
+  } else {
+    return res
+      .status(401)
+      .json({ success: false, message: "Auth token not found" });
+  }
 };
-export const sign_up = async (req, res) => {
-  res.send("Sign up");
-};
+
 export const google_callback = async (req, res) => {
   // console.log(req.body);
   const { credential } = req.body;
@@ -41,28 +51,62 @@ export const google_callback = async (req, res) => {
     }
 
     const user = await User.findOne({ email });
+    //if user exists login them
     if (user) {
-      return res
-        .status(401)
-        .json({ success: false, message: "user already exist" });
-    }
-    try {
-      const user = new User({
-        name,
-        email,
-        profile_image: picture,
-        googleId: sub,
+      const { _id, googleId, ...sentUser } = user.toObject();
+      await generateAndSendAuthToken(res, user._id);
+      return res.status(200).json({
+        success: true,
+        message: "user already exist....... loging in",
+        sentUser,
       });
-      const createdUser = await user.save();
-      if (createdUser) {
-        console.log(createdUser);
-      }
-    } catch (error) {}
+    }
+    const newUser = new User({
+      name,
+      email,
+      profile_image: picture,
+      googleId: sub,
+    });
+    const createdUser = await newUser.save();
+    if (createdUser) {
+      await generateAndSendAuthToken(res, createdUser._id);
+      console.log(createdUser);
+      return res.status(200).json({
+        success: true,
+        message: "user created successfully",
+        createdUser,
+      });
+    }
   } catch (error) {
     console.log(error.message);
     return res.status(400).json({
       success: false,
       message: "Google Login failed - Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+export const checkAuth = async (req, res) => {
+  const { id } = req.id;
+  // console.log(id);
+  try {
+    const user = await User.findOne({ _id: id });
+    if (!user) {
+      return res
+        .status(401)
+        .json({ success: false, message: "user not found" });
+    }
+    const { _id, googleId, ...sentUser } = user.toObject();
+    // console.log(sentUser);
+    return res
+      .status(200)
+      .json({ success: true, message: "user found successfully", sentUser });
+  } catch (error) {
+    console.log("Error in the check auth controller : " + error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
       error: error.message,
     });
   }

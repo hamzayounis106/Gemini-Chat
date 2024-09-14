@@ -1,25 +1,45 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import StartingTest from "./Components/StartingTest";
 import { Routes, Route } from "react-router-dom";
 import Chat from "./Pages/Chat";
 import { createContext } from "react";
-
-export const GoogleApiContext = createContext("");
+import axios from "axios";
+export const UserContext = createContext();
 function App() {
-  const [api, setApi] = React.useState("");
+  const [user, setUser] = useState(null);
+
   useEffect(() => {
-    setApi(import.meta.env.VITE_GOOGLE_CLIENT_ID);
-  },[]);
+    const checkAuth = async () => {
+      try {
+        const res = await axios.post(
+          "http://localhost:3000/api/authRoutes/check-auth",
+          {},
+          {
+            withCredentials: true,
+          }
+        );
+        if (res.status === 200) {
+          setUser(res.data.sentUser);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    checkAuth();
+    console.log(user);
+  }, []);
 
   return (
-    <GoogleApiContext.Provider value={api}>
+    <>
       <div>
-        <Routes>
-          <Route path="/StartingTest" element={<StartingTest />} />
-          <Route path="/" element={<Chat />} />
-        </Routes>
+        <UserContext.Provider value={user}>
+          <Routes>
+            <Route path="/StartingTest" element={<StartingTest />} />
+            <Route path="/" element={<Chat />} />
+          </Routes>
+        </UserContext.Provider>
       </div>
-    </GoogleApiContext.Provider>
+    </>
   );
 }
 
