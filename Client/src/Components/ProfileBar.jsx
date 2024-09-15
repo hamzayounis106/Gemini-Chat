@@ -18,7 +18,7 @@ function ProfileBar() {
     setDropdownVisible(!dropdownVisible);
     try {
       await axios.post(
-        server + "api/authRoutes/log-out",
+        server + "/api/authRoutes/log-out",
         {},
         {
           withCredentials: true,
