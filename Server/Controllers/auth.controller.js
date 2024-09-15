@@ -25,60 +25,70 @@ export const log_out = async (req, res) => {
 };
 
 export const google_callback = async (req, res) => {
-  // console.log(req.body);
+  console.log("Google callback initiated");
   const { credential } = req.body;
+
   if (!credential) {
-    console.log("Credential not recieved from Client");
+    console.log("Credential not received from Client");
     return res.status(400).json({
       success: false,
       message: "Google Login failed - Credential not found",
     });
   }
+
   try {
+    console.log("Verifying ID Token with Google");
     const ticket = await client.verifyIdToken({
       idToken: credential,
       audience: GoogleClientId,
     });
+
     const payLoad = ticket.getPayload();
     if (!payLoad) {
       throw new Error("No payload found in the ID token");
     }
+
+    console.log("Payload received from Google:", payLoad);
     const { sub, email, name, picture } = payLoad;
+
     if (!sub || !email || !name || !picture) {
-      throw new Error(
-        "Complete data not found in the ID token from google auth"
-      );
+      throw new Error("Complete data not found in the ID token from Google Auth");
     }
 
+    // Check if user exists
     const user = await User.findOne({ email });
-    //if user exists login them
     if (user) {
+      console.log("User already exists, logging in...");
       const { _id, googleId, ...sentUser } = user.toObject();
       await generateAndSendAuthToken(res, user._id);
       return res.status(200).json({
         success: true,
-        message: "user already exist....... loging in",
+        message: "User already exists... logging in",
         sentUser,
       });
     }
+
+    console.log("User does not exist, creating a new user");
     const newUser = new User({
       name,
       email,
       profile_image: picture,
       googleId: sub,
     });
+
     const createdUser = await newUser.save();
+    console.log("New user created:", createdUser);
+
     if (createdUser) {
       await generateAndSendAuthToken(res, createdUser._id);
-      console.log(createdUser);
       return res.status(200).json({
         success: true,
-        message: "user created successfully",
+        message: "User created successfully",
         createdUser,
       });
     }
   } catch (error) {
-    console.log(error.message);
+    console.log("Error in Google callback:", error.message);
     return res.status(400).json({
       success: false,
       message: "Google Login failed - Internal Server Error",
@@ -86,6 +96,7 @@ export const google_callback = async (req, res) => {
     });
   }
 };
+
 
 export const checkAuth = async (req, res) => {
   const { id } = req.id;
