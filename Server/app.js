@@ -15,10 +15,11 @@ app.use(
   cors({
     origin: [
       "https://gemini-chat-theta-two.vercel.app",
-      process.env.CLIENT_URL
+      process.env.CLIENT_URL,
     ],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow any method
+    credentials: true, // Allow sending cookies
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow headers for preflight
   })
 );
 
