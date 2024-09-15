@@ -11,7 +11,7 @@ function Login() {
     console.log(userData);
     try {
       const res = await axios.post(
-        `${server}/api/authRoutes/auth/google/callback`,
+        `${server}/authRoutes/auth/google/callback`,
         {
           credential: googleData,
         },

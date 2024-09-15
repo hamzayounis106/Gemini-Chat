@@ -16,7 +16,7 @@ function ChatArea() {
   const [buttonDisbaled, setButtonDisabled] = useState(true);
 
   const [responseData, setResponseData] = useState([]);
-  const server = import.meta.env.VITE_SERVER_URL;
+    const server = import.meta.env.VITE_SERVER_URL;
   useEffect(() => {
     const getFirstResponse = async () => {
       setLoading(true);

@@ -24,7 +24,7 @@ app.use(
 );
 
 //Routes
-app.use("/api/authRoutes", authRoutes);
+app.use("/authRoutes", authRoutes);
 app.use("/geminiRoutes", geminiRoutes);
 app.get("/", (req, res) => {
   res.send("This is the sever /");
