@@ -29,6 +29,9 @@ app.use("/geminiRoutes", geminiRoutes);
 app.get("/", (req, res) => {
   res.send("This is the sever /");
 });
+app.get("/db", (req, res) => {
+  console.log(connectDb());
+});
 //listening server at a port
 app.listen(3000, () => {
   connectDb();
