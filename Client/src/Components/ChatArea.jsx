@@ -16,13 +16,13 @@ function ChatArea() {
   const [buttonDisbaled, setButtonDisabled] = useState(true);
 
   const [responseData, setResponseData] = useState([]);
-
+  const server = import.meta.env.VITE_SERVER_URL;
   useEffect(() => {
     const getFirstResponse = async () => {
       setLoading(true);
       setButtonDisabled(true);
       try {
-        const res = await axios.get("/api/geminiRoutes/getHistory");
+        const res = await axios.get(server + "/geminiRoutes/getHistory");
 
         setHistory(res.data.history);
       } catch (error) {
@@ -56,7 +56,9 @@ function ChatArea() {
 
     try {
       setButtonDisabled(true);
-      const res = await axios.post("/api/geminiRoutes/sendPrompt", { prompt });
+      const res = await axios.post(server + "/geminiRoutes/sendPrompt", {
+        prompt,
+      });
       console.log(res.data);
       setResponseData((prevData) => [...prevData, ...res.data]);
     } catch (error) {

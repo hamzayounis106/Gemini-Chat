@@ -7,12 +7,12 @@ import axios from "axios";
 export const UserContext = createContext();
 function App() {
   const [user, setUser] = useState(null);
-
+  const server = import.meta.env.VITE_SERVER_URL;
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const res = await axios.post(
-          "http://localhost:3000/api/authRoutes/check-auth",
+          server + "api/authRoutes/check-auth",
           {},
           {
             withCredentials: true,

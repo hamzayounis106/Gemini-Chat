@@ -4,13 +4,14 @@ import axios from "axios";
 
 import { jwtDecode } from "jwt-decode";
 function Login() {
+  const server = import.meta.env.VITE_SERVER_URL;
   const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   const handelLogin = async (googleData) => {
     const userData = jwtDecode(googleData);
     console.log(userData);
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/authRoutes/auth/google/callback",
+        server + "/api/authRoutes/auth/google/callback",
         {
           credential: googleData,
         },
