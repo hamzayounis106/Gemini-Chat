@@ -12,7 +12,7 @@ function App() {
     const checkAuth = async () => {
       try {
         const res = await axios.post(
-          server + "/api/authRoutes/check-auth",
+          `https://gemini-chat-api.vercel.app/api/authRoutes/check-auth`,
           {},
           {
             withCredentials: true,
