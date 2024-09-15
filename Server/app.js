@@ -13,19 +13,12 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(
   cors({
-    origin: (origin, callback) => {
-      const allowedOrigins = [
-        "https://gemini-chat-theta-two.vercel.app",
-        process.env.CLIENT_URL
-      ];
-      if (allowedOrigins.includes(origin) || !origin) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: [
+      "https://gemini-chat-theta-two.vercel.app",
+      process.env.CLIENT_URL
+    ],
     credentials: true,
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow any method
   })
 );
 
