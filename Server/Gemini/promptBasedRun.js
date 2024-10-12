@@ -16,9 +16,7 @@ export const promptBasedRun = async (prompt, session_UUID) => {
   let sessions = getAllSessions();
   let session = sessions.find((ses) => ses.uu_session_id === session_UUID);
   if (!session) {
-    return res
-      .status(404)
-      .json({ success: false, message: "Session not found" });
+    return null;
   }
   // console.log(session_UUID);
   let history = session.history;
@@ -32,8 +30,8 @@ export const promptBasedRun = async (prompt, session_UUID) => {
     return text;
   } catch (error) {
     return error.message;
-  } finally{
-    console.log(session_UUID );
-    console.log(history)
+  } finally {
+    console.log(session_UUID);
+    console.log(history);
   }
 };

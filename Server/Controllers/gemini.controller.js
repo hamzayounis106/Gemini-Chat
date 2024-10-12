@@ -12,7 +12,11 @@ export const sendPrompt = async (req, res) => {
 
   const prompt = req.body.prompt;
   const reply = await promptBasedRun(prompt, session_UUID);
-
+  if (!reply) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Session not found" });
+  }
   const data = [
     {
       role: "user",
