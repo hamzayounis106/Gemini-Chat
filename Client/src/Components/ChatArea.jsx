@@ -3,9 +3,12 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import UserMessageComponent from "./UserMessageComponent";
 import ClientMessageComponent from "./ClientMessageComponent";
-
+import { SesssionUUIDContext } from "../App";
+import { useContext } from "react";
 import AILiveResponse from "./AILiveResponse";
+import { useNavigate } from "react-router-dom";
 function ChatArea() {
+  const navigate = useNavigate();
   const [rows, setRows] = useState(1);
   const [loading, setLoading] = useState(false);
   const [prompt, setPrompt] = useState("");
@@ -14,26 +17,37 @@ function ChatArea() {
 
   const useChatContainer = useRef(null);
   const [buttonDisbaled, setButtonDisabled] = useState(true);
-
+  const session_UUID = useContext(SesssionUUIDContext);
   const [responseData, setResponseData] = useState([]);
-    const server = import.meta.env.VITE_SERVER_URL;
+  const server = import.meta.env.VITE_SERVER_URL;
   useEffect(() => {
     const getFirstResponse = async () => {
       setLoading(true);
       setButtonDisabled(true);
       try {
-        const res = await axios.get(server + "/geminiRoutes/getHistory");
-
+        console.log(session_UUID);
+        const res = await axios.post(
+          `${server}/geminiRoutes/getHistory?s=${session_UUID}`
+        );
+        console.log(res);
         setHistory(res.data.history);
       } catch (error) {
+        if (error.response.status === 404) {
+          window.location.href = "/";
+          console.log(404);
+        }
         console.error("Error sending prompt:", error);
       } finally {
         setLoading(false);
         setButtonDisabled(false);
       }
     };
-    getFirstResponse();
-  }, []);
+    if (session_UUID) {
+      getFirstResponse();
+    } else {
+      console.log("no session id being recieved");
+    }
+  }, [session_UUID]);
   const scrollToBottom = () => {
     if (useChatContainer.current) {
       useChatContainer.current.scrollTop =
@@ -56,9 +70,13 @@ function ChatArea() {
 
     try {
       setButtonDisabled(true);
-      const res = await axios.post(server + "/geminiRoutes/sendPrompt", {
-        prompt,
-      });
+      // console.log(session_UUID);
+      const res = await axios.post(
+        server + `/geminiRoutes/sendPrompt?s=${session_UUID}`,
+        {
+          prompt,
+        }
+      );
       console.log(res.data);
       setResponseData((prevData) => [...prevData, ...res.data]);
     } catch (error) {
@@ -76,25 +94,26 @@ function ChatArea() {
           ref={useChatContainer}
           className="h-[75%] px-4 oldData overflow-y-auto overflow-hidden w-[80%] gap-3 flex flex-col relative"
         >
-          {history.map((msg, index) => {
-            if (msg.role === "user") {
-              return (
-                <UserMessageComponent
-                  key={index + "History"}
-                  id={msg.role + " " + index + "History"}
-                  message={msg.parts[0].text}
-                />
-              );
-            } else {
-              return (
-                <ClientMessageComponent
-                  key={index + "History"}
-                  id={msg.role + " " + index + "History"}
-                  message={msg.parts[0].text}
-                />
-              );
-            }
-          })}
+          {history &&
+            history.map((msg, index) => {
+              if (msg.role === "user") {
+                return (
+                  <UserMessageComponent
+                    key={index + "History"}
+                    id={msg.role + " " + index + "History"}
+                    message={msg.parts[0].text}
+                  />
+                );
+              } else {
+                return (
+                  <ClientMessageComponent
+                    key={index + "History"}
+                    id={msg.role + " " + index + "History"}
+                    message={msg.parts[0].text}
+                  />
+                );
+              }
+            })}
           {responseData.map((msg, index) => {
             if (msg.role === "user") {
               return (

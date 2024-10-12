@@ -5,6 +5,8 @@ import { connectDb } from "./db/connectionsdb.js";
 import authRoutes from "./Routes/auth.route.js";
 import geminiRoutes from "./Routes/gemini.route.js";
 import cookieParser from "cookie-parser";
+import { generateUUID } from "./Utils/generateUUID.js";
+import { addSession, getAllSessions } from "./Utils/sessions.js";
 env.config();
 
 const app = express();
@@ -29,8 +31,13 @@ app.use("/geminiRoutes", geminiRoutes);
 app.get("/", (req, res) => {
   res.send("This is the sever /");
 });
-app.get("/db", (req, res) => {
-  console.log(connectDb());
+
+app.get("/new-session", async (req, res) => {
+  const session_id = generateUUID();
+  await addSession(session_id);
+  // const sessions = await getAllSessions();
+  // console.log(sessions);
+  res.status(200).json({ sessionId: session_id });
 });
 //listening server at a port
 app.listen(3000, () => {

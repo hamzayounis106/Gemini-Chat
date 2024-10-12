@@ -7,5 +7,5 @@ import {
 const router = express.Router();
 router.get("/test", test);
 router.post("/sendPrompt", sendPrompt);
-router.get("/getHistory", getHistory);
+router.post("/getHistory", getHistory);
 export default router;
