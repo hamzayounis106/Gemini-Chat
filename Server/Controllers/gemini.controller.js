@@ -43,7 +43,7 @@ export const getHistory = async (req, res) => {
     // console.log(session);
 
     if (session) {
-      return res.status(200).json({ success: true, data: session.history });
+      return res.status(200).json({ success: true, history: session.history });
     } else {
       return res
         .status(404)
