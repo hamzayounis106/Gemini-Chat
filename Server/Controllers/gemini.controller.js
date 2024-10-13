@@ -1,5 +1,7 @@
 import { promptBasedRun } from "../Gemini/promptBasedRun.js";
+import TempChat from "../Models/tempChat.js";
 import { getAllSessions } from "../Utils/sessions.js";
+import { updateLastUsedTempChat } from "../Utils/updateLastUsedTempChat.js";
 
 export const test = async (req, res) => {
   console.log("API called");
@@ -42,11 +44,12 @@ export const getHistory = async (req, res) => {
   }
 
   try {
-    let sessions = getAllSessions(); // Ensure getAllSessions is awaited if it's asynchronous
-    let session = sessions.find((ses) => ses.uu_session_id === session_UUID);
-    // console.log(session);
+    // let sessions = getAllSessions();
+    // let session = sessions.find((ses) => ses.uu_session_id === session_UUID);
+    let session = await TempChat.findOne({ uuid: session_UUID });
 
     if (session) {
+      updateLastUsedTempChat(session_UUID)
       return res.status(200).json({ success: true, history: session.history });
     } else {
       return res
