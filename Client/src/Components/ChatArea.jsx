@@ -27,9 +27,13 @@ function ChatArea() {
       try {
         console.log(session_UUID);
         const res = await axios.post(
-          `${server}/geminiRoutes/getHistory?s=${session_UUID}`
+          `${server}/geminiRoutes/getHistory?s=${session_UUID}`,
+          {},
+          {
+            withCredentials: true,
+          }
         );
-        console.log(res);
+        // console.log(res);
         setHistory(res.data.history);
       } catch (error) {
         if (error.response.status === 404) {
@@ -75,6 +79,9 @@ function ChatArea() {
         server + `/geminiRoutes/sendPrompt?s=${session_UUID}`,
         {
           prompt,
+        },
+        {
+          withCredentials: true,
         }
       );
       console.log(res.data);

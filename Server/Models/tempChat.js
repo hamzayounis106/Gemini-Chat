@@ -10,7 +10,7 @@ const tempChatScheema = mongoose.Schema({
   },
   lastUsed: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
   },
 });
 tempChatScheema.index(

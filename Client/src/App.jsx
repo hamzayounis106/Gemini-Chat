@@ -12,22 +12,6 @@ function App() {
   const [uuid, setUUID] = useState(null);
   const server = import.meta.env.VITE_SERVER_URL;
   useEffect(() => {
-    if (location.href.includes("/s")) {
-      // console.log(location.pathname.replace("/s/",""))
-      setUUID(location.pathname.replace("/s/",""))
-      return;
-    }
-    const createSession = async () => {
-      try {
-        const res = await axios.get(server + "/new-session");
-        const session_UUID = res.data.sessionId;
-        if (session_UUID) {
-          setUUID(session_UUID);
-          navigate(`/s/${session_UUID}`, { replace: true });
-        }
-      } catch (error) {}
-    };
-    createSession();
     const checkAuth = async () => {
       try {
         const res = await axios.post(
@@ -37,6 +21,7 @@ function App() {
             withCredentials: true,
           }
         );
+
         if (res.status === 200) {
           setUser(res.data.sentUser);
         }
@@ -44,7 +29,30 @@ function App() {
         console.log(error);
       }
     };
-    checkAuth();
+    if (location.href.includes("/s")) {
+      // console.log(location.pathname.replace("/s/",""))
+      setUUID(location.pathname.replace("/s/", ""));
+      checkAuth();
+      return;
+    }
+    const createSession = async () => {
+      try {
+        const res = await axios.post(
+          server + "/sessions/new-session",
+          {},
+          {
+            withCredentials: true,
+          }
+        );
+        const session_UUID = res.data.sessionId;
+        if (session_UUID) {
+          setUUID(session_UUID);
+          navigate(`/s/${session_UUID}`, { replace: true });
+        }
+      } catch (error) {}
+    };
+    createSession();
+
     console.log(user);
   }, []);
 

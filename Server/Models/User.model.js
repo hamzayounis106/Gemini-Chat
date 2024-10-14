@@ -19,12 +19,10 @@ const UserSchema = new Schema({
     required: true,
     default: Date.now(),
   },
-  chats: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Chat",
-    },
-  ],
+  chats: {
+    type: Array,
+    default: [],
+  },
   plan: {
     type: String,
     default: "Free",

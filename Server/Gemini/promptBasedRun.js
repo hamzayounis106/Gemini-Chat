@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { getAllSessions } from "../Utils/sessions.js";
 import TempChat from "../Models/tempChat.js";
+import Chat from "../Models/Chat.logged.js";
 
 const safe = {
   HARM_CATEGORY_HARASSMENT: "BLOCK_NONE",
@@ -17,6 +18,34 @@ export const promptBasedRun = async (prompt, session_UUID) => {
   // let sessions = getAllSessions();
   // let session = sessions.find((ses) => ses.uu_session_id === session_UUID);
   let session = await TempChat.findOne({ uuid: session_UUID });
+  if (!session) {
+    return null;
+  }
+  // console.log(session_UUID);
+  let history = session.history;
+
+  const chat = model.startChat({ history });
+
+  try {
+    const result = await chat.sendMessage(prompt);
+    const res = await result.response;
+    const text = await res.text();
+    session.lastUsed = Date.now();
+    session.history = history;
+    await session.save();
+    // console.log(history);
+    return text;
+  } catch (error) {
+    return error.message;
+  } finally {
+    // console.log(session_UUID);
+    // console.log(history);
+  }
+};
+export const promptBasedRunLoggedIn = async (prompt, session_UUID) => {
+  // let sessions = getAllSessions();
+  // let session = sessions.find((ses) => ses.uu_session_id === session_UUID);
+  let session = await Chat.findOne({ uuid: session_UUID });
   if (!session) {
     return null;
   }

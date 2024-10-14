@@ -22,7 +22,7 @@ function Login() {
 
       if (res) {
         console.log(res.data);
-        window.location.reload();
+        window.location.href="/"
       }
     } catch (error) {
       console.log(error);

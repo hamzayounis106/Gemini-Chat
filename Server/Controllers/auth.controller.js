@@ -12,7 +12,7 @@ export const login = async (req, res) => {
 export const log_out = async (req, res) => {
   const authToken = req.cookies.auth_token;
   if (authToken) {
-    console.log(authToken);
+    // console.log(authToken);
     res.clearCookie("auth_token", { path: "/" });
     return res
       .status(200)
@@ -25,7 +25,7 @@ export const log_out = async (req, res) => {
 };
 
 export const google_callback = async (req, res) => {
-  console.log("Google callback initiated");
+  // console.log("Google callback initiated");
   const { credential } = req.body;
 
   if (!credential) {
@@ -37,7 +37,7 @@ export const google_callback = async (req, res) => {
   }
 
   try {
-    console.log("Verifying ID Token with Google");
+    // console.log("Verifying ID Token with Google");
     const ticket = await client.verifyIdToken({
       idToken: credential,
       audience: GoogleClientId,
@@ -48,7 +48,7 @@ export const google_callback = async (req, res) => {
       throw new Error("No payload found in the ID token");
     }
 
-    console.log("Payload received from Google:", payLoad);
+    // console.log("Payload received from Google:", payLoad);
     const { sub, email, name, picture } = payLoad;
 
     if (!sub || !email || !name || !picture) {
@@ -58,7 +58,7 @@ export const google_callback = async (req, res) => {
     // Check if user exists
     const user = await User.findOne({ email });
     if (user) {
-      console.log("User already exists, logging in...");
+      // console.log("User already exists, logging in...");
       const { _id, googleId, ...sentUser } = user.toObject();
       await generateAndSendAuthToken(res, user._id);
       return res.status(200).json({
@@ -68,7 +68,7 @@ export const google_callback = async (req, res) => {
       });
     }
 
-    console.log("User does not exist, creating a new user");
+    // console.log("User does not exist, creating a new user");
     const newUser = new User({
       name,
       email,
@@ -77,7 +77,7 @@ export const google_callback = async (req, res) => {
     });
 
     const createdUser = await newUser.save();
-    console.log("New user created:", createdUser);
+    // console.log("New user created:", createdUser);
 
     if (createdUser) {
       await generateAndSendAuthToken(res, createdUser._id);

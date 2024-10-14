@@ -12,7 +12,7 @@ router.options("/auth/google/callback", (req, res) => {
   res.set(
     "Access-Control-Allow-Origin",
     "https://gemini-chat-theta-two.vercel.app"
-  );
+  );  
   res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.set("Access-Control-Allow-Headers", "Content-Type");
   res.set("Access-Control-Allow-Credentials", "true");

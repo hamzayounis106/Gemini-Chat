@@ -24,7 +24,7 @@ function ProfileBar() {
           withCredentials: true,
         }
       );
-      window.location.reload();
+     window.location.href="/"
     } catch (error) {
       alert(error.message);
     }

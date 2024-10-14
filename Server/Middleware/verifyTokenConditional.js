@@ -1,12 +1,13 @@
 import jwt from "jsonwebtoken";
 
-export const verifyToken = async (req, res, next) => {
+export const verifyTokenConditional = async (req, res, next) => {
   const { auth_token } = req.cookies;
   if (!auth_token) {
-    return res
-      .status(403)
-      .json({ succes: false, message: "Auth token not found" });
+    console.log("In verifyTokenConditional.js the authtoke is null ")
+    req.id = null;
+    next();
   }
+
   try {
     const decoded = await jwt.decode(auth_token, process.env.JWT_SECRET);
     if (!decoded) {
@@ -16,6 +17,5 @@ export const verifyToken = async (req, res, next) => {
     next();
   } catch (error) {
     console.log(error.message);
-    return res.status(500).json({ succes: false, message: error.message });
   }
 };
