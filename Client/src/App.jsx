@@ -22,19 +22,21 @@ function App() {
           }
         );
 
+        // console.log(res)
         if (res.status === 200) {
           setUser(res.data.sentUser);
         }
       } catch (error) {
         console.log(error);
       }
-    };
+    };  checkAuth();
     if (location.href.includes("/s")) {
       // console.log(location.pathname.replace("/s/",""))
       setUUID(location.pathname.replace("/s/", ""));
       checkAuth();
       return;
     }
+  
     const createSession = async () => {
       try {
         const res = await axios.post(
