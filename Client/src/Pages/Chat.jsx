@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import SideBar from "../Components/SideBar";
 import ChatArea from "../Components/ChatArea";
 import Login from "./Login";
@@ -7,7 +7,10 @@ import { UserContext } from "../App";
 
 function Chat() {
   const user = useContext(UserContext);
-  console.log(user);
+  useEffect(() => {
+    console.log("chat refresh");
+  },[user]);
+  // console.log(user);
   return (
     <>
       <div className="flex relative w-full h-screen justify-center bg-gradient-to-tl bg-[#0D1117]">

@@ -6,9 +6,10 @@ import ClientMessageComponent from "./ClientMessageComponent";
 import { UserContext } from "../App";
 import { useContext } from "react";
 import AILiveResponse from "./AILiveResponse";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 function ChatArea() {
   const navigate = useNavigate();
+  const pageLocation = useLocation();
   const [rows, setRows] = useState(1);
   const [loading, setLoading] = useState(false);
   const [prompt, setPrompt] = useState("");
@@ -24,8 +25,12 @@ function ChatArea() {
   const [responseData, setResponseData] = useState([]);
   const server = import.meta.env.VITE_SERVER_URL;
   useEffect(() => {
+    setUUID(null);
+  }, [user]);
+  useEffect(() => {
     if (!location.href.includes("/s")) {
       console.log("no uuid to get history, returning");
+      setHistory([]);
       return;
     }
     setUUID(location.pathname.replace("/s/", ""));
@@ -61,7 +66,8 @@ function ChatArea() {
     // } else {
     //   console.log("no session id being recieved");
     // }
-  }, [uuid]);
+    console.log("Adada ");
+  }, [uuid, navigate]);
 
   const scrollToBottom = () => {
     if (useChatContainer.current) {
@@ -77,7 +83,8 @@ function ChatArea() {
     if (location.href.includes("/s")) {
       setUUID(location.pathname.replace("/s/", ""));
     }
-  }, []);
+    setResponseData([]);
+  }, [navigate, location]);
   const createSession = async () => {
     if (uuid) {
       return;
@@ -85,7 +92,7 @@ function ChatArea() {
     try {
       const res = await axios.post(
         server + "/sessions/new-session",
-        {prompt},
+        { prompt },
         {
           withCredentials: true,
         }

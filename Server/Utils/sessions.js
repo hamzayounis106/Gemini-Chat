@@ -61,7 +61,7 @@ export const addUserloggedSessions = async (uu_session_id, userId,prompt) => {
       const loggedInSession = new Chat({ uuid: uu_session_id });
       // console.log(loggedInSession);
       await loggedInSession.save();
-      user.chats.push({ chatID: uu_session_id, title: titleChat });
+      user.chats.unshift({ chatID: uu_session_id, title: titleChat });
       await user.save();
     }
   } catch (error) {

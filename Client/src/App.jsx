@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import StartingTest from "./Components/StartingTest";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Chat from "./Pages/Chat";
 import { createContext } from "react";
 import axios from "axios";
 // export const SesssionUUIDContext = createContext();
 export const UserContext = createContext();
 function App() {
-  // const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);  const location = useLocation();
   // const [uuid, setUUID] = useState(null);
   const server = import.meta.env.VITE_SERVER_URL;
   useEffect(() => {
@@ -35,8 +35,8 @@ function App() {
     };
     checkAuth();
 
-    console.log(user);
-  }, []);
+    console.log("app js refresh");
+  }, [navigate,location]);
 
   return (
     <>
