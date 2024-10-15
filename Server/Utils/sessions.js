@@ -9,6 +9,7 @@
 // export const getAllSessions = () => {
 //   return sessions;
 // };
+import { creatChatTitle } from "../Gemini/titleCreation.js";
 import Chat from "../Models/Chat.logged.js";
 import TempChat from "../Models/tempChat.js";
 import User from "../Models/User.model.js";
@@ -34,7 +35,10 @@ export const getAllSessions = async () => {
   }
   return sessions;
 };
-export const addUserloggedSessions = async (uu_session_id, userId) => {
+export const addUserloggedSessions = async (uu_session_id, userId,prompt) => {
+
+  const titleChat = await creatChatTitle(prompt);
+  // console.log(titleChat);
   if (!userId) {
     throw new Error(
       "User Id not found in userLoggedSessions while creating session"
@@ -55,9 +59,9 @@ export const addUserloggedSessions = async (uu_session_id, userId) => {
   try {
     if (uu_session_id) {
       const loggedInSession = new Chat({ uuid: uu_session_id });
-      console.log(loggedInSession)
+      // console.log(loggedInSession);
       await loggedInSession.save();
-      user.chats.push(uu_session_id);
+      user.chats.push({ chatID: uu_session_id, title: titleChat });
       await user.save();
     }
   } catch (error) {

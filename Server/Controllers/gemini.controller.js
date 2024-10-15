@@ -19,19 +19,14 @@ export const sendPrompt = async (req, res) => {
   let anonymousUUID = req.query.a;
   if (req.id) {
     const { id } = req.id;
-    const user = await User.findById(id);
-    if (!user) {
-      throw new Error(
-        "User not found in userLoggedSessions while creating session"
-      );
-    }
+
     if (!session_UUID) {
       return res
         .status(400)
         .json({ success: false, message: "No session uid received" });
     }
     const prompt = req.body.prompt;
-    const reply = await promptBasedRunLoggedIn(prompt, session_UUID);
+    const reply = await promptBasedRunLoggedIn(prompt, session_UUID, id);
     if (!reply) {
       return res
         .status(404)

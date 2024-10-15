@@ -17,6 +17,7 @@ function ChatArea() {
   const [anonymousUUID, setAnonymousUUID] = useState(null);
   const useChatContainer = useRef(null);
   const [buttonDisbaled, setButtonDisabled] = useState(true);
+
   // const session_UUID = useContext(SesssionUUIDContext);
   const user = useContext(UserContext);
   const [uuid, setUUID] = useState(null);
@@ -84,7 +85,7 @@ function ChatArea() {
     try {
       const res = await axios.post(
         server + "/sessions/new-session",
-        {},
+        {prompt},
         {
           withCredentials: true,
         }
@@ -96,9 +97,11 @@ function ChatArea() {
         setUUID(ses_uuid_revieved);
 
         navigate(`/s/${ses_uuid_revieved}`, { replace: true });
+        return ses_uuid_revieved;
       }
     } catch (error) {
       console.log("Error while creating new session on first prompt" + error);
+      return null;
     }
   };
   const createAnonymousSession = async () => {
@@ -109,26 +112,16 @@ function ChatArea() {
       const res = await axios.post(
         server + "/sessions/create-anonymous-session"
       );
-      console.log("anon id res: " + res.data.anonTokenId);
+      const anon_res_id = res.data.anonTokenId;
+      // console.log("anon id res: " + anon_res_id);
       setAnonymousUUID(res.data.anonTokenId);
+      return anon_res_id;
     } catch (error) {
       console.log(error);
       // window.location.href = "/";
     }
   };
-  useEffect(() => {
-    if (prompt.trim() === "") {
-      setButtonDisabled(true);
-      setLoading(false);
 
-      return;
-    }
-    if (user) {
-      createSession();
-    } else if (!user) {
-      createAnonymousSession();
-    }
-  }, [prompt]);
   const handlePromptSend = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -136,41 +129,45 @@ function ChatArea() {
     if (prompt.trim() === "") {
       setButtonDisabled(true);
       setLoading(false);
-
       return;
     }
-
+    let sessionId = uuid;
+    let anonymousId = anonymousUUID;
+    // Reset prompt input after sending the message
     setPrompt("");
     setRows(1);
 
     try {
       setButtonDisabled(true);
-      console.log("checking in sending prompr :  " + anonymousUUID);
-      if (anonymousUUID) {
-        const res = await axios.post(
-          server + `/geminiRoutes/sendPrompt?a=${anonymousUUID}`,
-          {
-            prompt,
-          },
-          {
-            withCredentials: true,
-          }
-        );
-        console.log(res.data);
-        setResponseData((prevData) => [...prevData, ...res.data]);
-        return;
+
+      // Check if user is authenticated, create session if necessary
+      if (user && !uuid) {
+        sessionId = await createSession();
+      } else if (!user && !anonymousUUID) {
+        anonymousId = await createAnonymousSession();
       }
 
-      const res = await axios.post(
-        server +
-          `/geminiRoutes/sendPrompt?s=${location.pathname.replace("/s/", "")}`,
-        {
-          prompt,
-        },
-        {
-          withCredentials: true,
-        }
-      );
+      console.log("checking in sending prompt anonymousId :  " + anonymousId);
+      console.log("checking in sending prompt sessionId :  " + sessionId);
+
+      let res;
+      if (anonymousId) {
+        res = await axios.post(
+          server + `/geminiRoutes/sendPrompt?a=${anonymousId}`,
+          { prompt },
+          { withCredentials: true }
+        );
+      } else {
+        res = await axios.post(
+          server +
+            `/geminiRoutes/sendPrompt?s=${
+              sessionId || location.pathname.replace("/s/", "")
+            }`,
+          { prompt },
+          { withCredentials: true }
+        );
+      }
+
       console.log(res.data);
       setResponseData((prevData) => [...prevData, ...res.data]);
     } catch (error) {
