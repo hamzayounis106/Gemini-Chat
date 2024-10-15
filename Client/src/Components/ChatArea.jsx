@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import UserMessageComponent from "./UserMessageComponent";
 import ClientMessageComponent from "./ClientMessageComponent";
-import { SesssionUUIDContext } from "../App";
+import { UserContext } from "../App";
 import { useContext } from "react";
 import AILiveResponse from "./AILiveResponse";
 import { useNavigate } from "react-router-dom";
@@ -14,30 +14,37 @@ function ChatArea() {
   const [prompt, setPrompt] = useState("");
 
   const [history, setHistory] = useState([]);
-
+  const [anonymousUUID, setAnonymousUUID] = useState(null);
   const useChatContainer = useRef(null);
   const [buttonDisbaled, setButtonDisabled] = useState(true);
-  const session_UUID = useContext(SesssionUUIDContext);
+  // const session_UUID = useContext(SesssionUUIDContext);
+  const user = useContext(UserContext);
+  const [uuid, setUUID] = useState(null);
   const [responseData, setResponseData] = useState([]);
   const server = import.meta.env.VITE_SERVER_URL;
   useEffect(() => {
+    if (!location.href.includes("/s")) {
+      console.log("no uuid to get history, returning");
+      return;
+    }
+    setUUID(location.pathname.replace("/s/", ""));
     const getFirstResponse = async () => {
       setLoading(true);
       setButtonDisabled(true);
+
       try {
-        console.log(session_UUID);
         const res = await axios.post(
-          `${server}/geminiRoutes/getHistory?s=${session_UUID}`,
+          `${server}/geminiRoutes/getHistory?s=${uuid}`,
           {},
           {
             withCredentials: true,
           }
         );
-        // console.log(res);
+        console.log(res);
         setHistory(res.data.history);
       } catch (error) {
-        if (error.response.status === 404) {
-          window.location.href = "/";
+        if (error.response.status === 404 && location.href.includes("/s")) {
+          // window.location.href = "/";
           console.log(404);
         }
         console.error("Error sending prompt:", error);
@@ -46,37 +53,117 @@ function ChatArea() {
         setButtonDisabled(false);
       }
     };
-    if (session_UUID) {
-      getFirstResponse();
-    } else {
-      console.log("no session id being recieved");
-    }
-  }, [session_UUID]);
+    getFirstResponse();
+    // if (uuid) {
+    //   getFirstResponse();
+    //   console.log(session_UUID);
+    // } else {
+    //   console.log("no session id being recieved");
+    // }
+  }, [uuid]);
+
   const scrollToBottom = () => {
     if (useChatContainer.current) {
       useChatContainer.current.scrollTop =
         useChatContainer.current.scrollHeight;
     }
   };
+
   useEffect(() => {
     scrollToBottom();
   }, [responseData, history]);
-  const handlePromptSend = async (e) => {
-    setLoading(true);
-    e.preventDefault();
+  useEffect(() => {
+    if (location.href.includes("/s")) {
+      setUUID(location.pathname.replace("/s/", ""));
+    }
+  }, []);
+  const createSession = async () => {
+    if (uuid) {
+      return;
+    }
+    try {
+      const res = await axios.post(
+        server + "/sessions/new-session",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(res);
+      const ses_uuid_revieved = res.data.sessionId;
+      if (ses_uuid_revieved) {
+        console.log(ses_uuid_revieved);
+        setUUID(ses_uuid_revieved);
+
+        navigate(`/s/${ses_uuid_revieved}`, { replace: true });
+      }
+    } catch (error) {
+      console.log("Error while creating new session on first prompt" + error);
+    }
+  };
+  const createAnonymousSession = async () => {
+    if (anonymousUUID) {
+      return;
+    }
+    try {
+      const res = await axios.post(
+        server + "/sessions/create-anonymous-session"
+      );
+      console.log("anon id res: " + res.data.anonTokenId);
+      setAnonymousUUID(res.data.anonTokenId);
+    } catch (error) {
+      console.log(error);
+      // window.location.href = "/";
+    }
+  };
+  useEffect(() => {
     if (prompt.trim() === "") {
       setButtonDisabled(true);
+      setLoading(false);
 
       return;
     }
+    if (user) {
+      createSession();
+    } else if (!user) {
+      createAnonymousSession();
+    }
+  }, [prompt]);
+  const handlePromptSend = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    if (prompt.trim() === "") {
+      setButtonDisabled(true);
+      setLoading(false);
+
+      return;
+    }
+
     setPrompt("");
     setRows(1);
 
     try {
       setButtonDisabled(true);
-      // console.log(session_UUID);
+      console.log("checking in sending prompr :  " + anonymousUUID);
+      if (anonymousUUID) {
+        const res = await axios.post(
+          server + `/geminiRoutes/sendPrompt?a=${anonymousUUID}`,
+          {
+            prompt,
+          },
+          {
+            withCredentials: true,
+          }
+        );
+        console.log(res.data);
+        setResponseData((prevData) => [...prevData, ...res.data]);
+        return;
+      }
+
       const res = await axios.post(
-        server + `/geminiRoutes/sendPrompt?s=${session_UUID}`,
+        server +
+          `/geminiRoutes/sendPrompt?s=${location.pathname.replace("/s/", "")}`,
         {
           prompt,
         },

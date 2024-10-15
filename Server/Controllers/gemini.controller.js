@@ -1,4 +1,7 @@
-import { promptBasedRun, promptBasedRunLoggedIn } from "../Gemini/promptBasedRun.js";
+import {
+  promptBasedRun,
+  promptBasedRunLoggedIn,
+} from "../Gemini/promptBasedRun.js";
 import Chat from "../Models/Chat.logged.js";
 import TempChat from "../Models/tempChat.js";
 import User from "../Models/User.model.js";
@@ -13,6 +16,7 @@ export const test = async (req, res) => {
 };
 export const sendPrompt = async (req, res) => {
   let session_UUID = req.query.s;
+  let anonymousUUID = req.query.a;
   if (req.id) {
     const { id } = req.id;
     const user = await User.findById(id);
@@ -49,7 +53,7 @@ export const sendPrompt = async (req, res) => {
     return;
   }
   const prompt = req.body.prompt;
-  const reply = await promptBasedRun(prompt, session_UUID);
+  const reply = await promptBasedRun(prompt, anonymousUUID);
   if (!reply) {
     return res
       .status(404)

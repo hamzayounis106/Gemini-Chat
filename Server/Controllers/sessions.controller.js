@@ -11,7 +11,7 @@ export const newSession = async (req, res) => {
     return;
   }
   const session_id = generateUUID();
-  await addSession(session_id);
+  await addSession(session_id); 
 
-  res.status(200).json({ sessionId: session_id });
+  res.status(200).json({ anonTokenId: session_id });
 };
