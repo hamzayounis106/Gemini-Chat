@@ -21,7 +21,7 @@ export const addSession = async (uu_session_id) => {
       await session.save();
     }
   } catch (error) {
-    console.log("Error creating session" + error);
+    console.log("Error creating temp chat session : " + error);
   }
 };
 
@@ -31,12 +31,11 @@ export const getAllSessions = async () => {
     sessions = await TempChat.find();
     // console.log(sessions);
   } catch (error) {
-    console.log("Error getting sessions" + error);
+    console.log("Error getting all sessions:  " + error);
   }
   return sessions;
 };
-export const addUserloggedSessions = async (uu_session_id, userId,prompt) => {
-
+export const addUserloggedSessions = async (uu_session_id, userId, prompt) => {
   const titleChat = await creatChatTitle(prompt);
   // console.log(titleChat);
   if (!userId) {
@@ -58,13 +57,18 @@ export const addUserloggedSessions = async (uu_session_id, userId,prompt) => {
 
   try {
     if (uu_session_id) {
-      const loggedInSession = new Chat({ uuid: uu_session_id });
+      console.log(user._id);
+      const loggedInSession = new Chat({
+        uuid: uu_session_id,
+        user: user._id,
+        title: titleChat,
+      });
       // console.log(loggedInSession);
       await loggedInSession.save();
-      user.chats.unshift({ chatID: uu_session_id, title: titleChat });
-      await user.save();
+      // user.chats.unshift({ chatID: uu_session_id, title: titleChat });
+      // await user.save();
     }
   } catch (error) {
-    console.log("Error creating session" + error);
+    console.log("Error creating logged in session: " + error);
   }
 };

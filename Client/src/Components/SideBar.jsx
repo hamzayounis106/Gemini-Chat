@@ -26,9 +26,10 @@ function SideBar() {
         </Link>
         <div className="flex oldData  overflow-hidden   hover:overflow-y-auto  h-[85%] flex-col items-center justify-start w-full gap-2 ">
           {chats &&
+         
             chats.map((chat, key) => {
               return (
-                <ChatNamebar title={chat.title} key={key} uuid={chat.chatID} />
+                <ChatNamebar title={chat.title} key={key} uuid={chat.uuid} />
               );
             })}
 

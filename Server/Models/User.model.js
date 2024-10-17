@@ -19,10 +19,13 @@ const UserSchema = new Schema({
     required: true,
     default: Date.now(),
   },
-  chats: {
-    type: Array,
-    default: [],
-  },
+  chats: [
+    {
+      id: { type: mongoose.Schema.Types.ObjectId, ref: "Chat" },
+      title: { type: String },
+      uuid: { type: String },
+    },
+  ],
   plan: {
     type: String,
     default: "Free",

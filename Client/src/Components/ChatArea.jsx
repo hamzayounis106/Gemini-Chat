@@ -66,7 +66,7 @@ function ChatArea() {
     // } else {
     //   console.log("no session id being recieved");
     // }
-    console.log("Adada ");
+    // console.log("Adada ");
   }, [uuid, navigate]);
 
   const scrollToBottom = () => {
