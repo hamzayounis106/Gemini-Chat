@@ -5,7 +5,6 @@ import {
 import Chat from "../Models/Chat.logged.js";
 import TempChat from "../Models/tempChat.js";
 import User from "../Models/User.model.js";
-import { getAllSessions } from "../Utils/sessions.js";
 import { updateLastUsedTempChat } from "../Utils/updateLastUsedTempChat.js";
 
 export const test = async (req, res) => {

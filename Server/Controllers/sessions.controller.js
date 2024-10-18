@@ -5,8 +5,7 @@ export const newSession = async (req, res) => {
   if (req.id) {
     const { id } = req.id;
     const prompt = req.body.prompt;
-    // console.log(prompt);
-    // console.log("the id is " + id);
+
     const session_id = generateUUID();
     await addUserloggedSessions(session_id, id,prompt);
     res.status(200).json({ sessionId: session_id });

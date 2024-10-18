@@ -1,3 +1,4 @@
+//this is not being used anywhere currently :)
 import React, { useEffect, useState } from "react";
 
 function LiveResponse({ message, id }) {

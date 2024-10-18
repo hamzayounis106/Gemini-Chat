@@ -23,6 +23,7 @@ const ChatScheema = mongoose.Schema({
 });
 
 ChatScheema.index({ lastUsed: 1 }, { expireAfterSeconds: 7 * 24 * 60 * 60 });
+// Scheema Middlewares
 ChatScheema.pre("save", async function (next) {
   if (this.isNew) {
     await mongoose.model("User").updateOne(
@@ -43,12 +44,11 @@ ChatScheema.post("findOneAndDelete", async function (doc, next) {
   if (doc) {
     console.log("deleteOne from post: " + doc._id);
 
-    await mongoose.model("User").updateOne(
-      { _id: doc.user },
-      { $pull: { chats: { id: doc._id } } }
-    );
-  } else{
-    console.log("Nd doc is found")
+    await mongoose
+      .model("User")
+      .updateOne({ _id: doc.user }, { $pull: { chats: { id: doc._id } } });
+  } else {
+    console.log("Nd doc is found");
   }
   next();
 });

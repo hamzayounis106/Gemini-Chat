@@ -12,5 +12,5 @@ router.get("/test", test);
 router.post("/sendPrompt", verifyTokenConditional, sendPrompt);
 router.post("/getHistory", verifyTokenConditional, getHistory);
 router.post("/delete-chat", verifyToken, deleteChat); //only for logged in users
-// router.post("/get-user-chats", verifyToken, getUserChats);
+
 export default router;

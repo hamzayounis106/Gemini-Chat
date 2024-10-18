@@ -12,7 +12,7 @@ export const login = async (req, res) => {
 export const log_out = async (req, res) => {
   const authToken = req.cookies.auth_token;
   if (authToken) {
-    // console.log(authToken);
+
     res.clearCookie("auth_token", { path: "/" });
     return res
       .status(200)

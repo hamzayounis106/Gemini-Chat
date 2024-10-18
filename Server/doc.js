@@ -1,3 +1,4 @@
+//ignore this file, not being used anywhere
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import env from "dotenv";
 import fs from "fs";

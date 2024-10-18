@@ -6,14 +6,16 @@ function ProfileBar() {
   const user = useContext(UserContext);
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
+  //Handle dropdown visibilty Function
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
-
+  //Handle Plan upgrade Function
   const handleUpgradePlan = () => {
     setDropdownVisible(!dropdownVisible);
     alert("Coming soon!");
   };
+  //Handle Logout Function
   const handleLogout = async () => {
     setDropdownVisible(!dropdownVisible);
     try {
@@ -24,7 +26,7 @@ function ProfileBar() {
           withCredentials: true,
         }
       );
-     window.location.href="/"
+      window.location.href = "/";
     } catch (error) {
       alert(error.message);
     }

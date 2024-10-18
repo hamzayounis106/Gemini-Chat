@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import ChatNamebar from "./ChatNamebar";
 import { IoMdAddCircle } from "react-icons/io";
 import { useContext } from "react";
@@ -6,13 +6,17 @@ import { UserContext } from "../App";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 function SideBar() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const server = import.meta.env.VITE_SERVER_URL;
   const user = useContext(UserContext);
   const [chats, setChats] = useState(user.chats || []);
+
+  // Refreshing the component state if chats are changed
   useEffect(() => {
     setChats(user.chats);
   }, [user.chats]);
+
+  //Handling chat delete Function
   const handleChatDelete = async (uuid) => {
     try {
       const res = await axios.post(
@@ -23,16 +27,14 @@ function SideBar() {
         }
       );
       if (res.status === 200) {
-        navigate("/")
+        navigate("/");
         setChats((prevChats) => prevChats.filter((chat) => chat.uuid !== uuid));
-        
       }
-      // console.log("Deleting Chat response : " + res);
     } catch (error) {
       console.log("Deleting Chat response error : " + error);
     }
   };
-  // console.log(chats);
+
   return (
     <>
       <div className="max-w-[20%] w-full max-h-full bg-[#0c0f14] border-r-2 border-[#94a3b833] flex justify-start items-center pt-2 flex-col gap-5">

@@ -6,34 +6,38 @@ import ClientMessageComponent from "./ClientMessageComponent";
 import { UserContext } from "../App";
 import { useContext } from "react";
 
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 function ChatArea() {
+  // Initialize navigation and state variables
   const navigate = useNavigate();
-  const pageLocation = useLocation();
+  const useChatContainer = useRef(null);
+  const user = useContext(UserContext);
+  const server = import.meta.env.VITE_SERVER_URL;
+
   const [rows, setRows] = useState(1);
   const [loading, setLoading] = useState(false);
   const [prompt, setPrompt] = useState("");
-
   const [history, setHistory] = useState([]);
   const [anonymousUUID, setAnonymousUUID] = useState(null);
-  const useChatContainer = useRef(null);
   const [buttonDisbaled, setButtonDisabled] = useState(true);
-
-  // const session_UUID = useContext(SesssionUUIDContext);
-  const user = useContext(UserContext);
   const [uuid, setUUID] = useState(null);
   const [responseData, setResponseData] = useState([]);
-  const server = import.meta.env.VITE_SERVER_URL;
+
+  // Reset UUID when user changes
   useEffect(() => {
     setUUID(null);
   }, [user]);
+
+  // Fetch history when UUID changes
   useEffect(() => {
+    // Ignore if not on a session path
     if (!location.href.includes("/s")) {
-      // console.log("no uuid to get history, returning");
       setHistory([]);
       return;
     }
+    // Extract UUID from the path
     setUUID(location.pathname.replace("/s/", ""));
+    // Fetch the first response and history
     const getFirstResponse = async () => {
       setLoading(true);
       setButtonDisabled(true);
@@ -46,49 +50,35 @@ function ChatArea() {
             withCredentials: true,
           }
         );
-        // console.log(res);
+
         setHistory(res.data.history);
-        // console.log(res.data.history.length - 1);
-        // document
-        //   .querySelector(`#model${res.data.history.length - 1}`)
-        //   .scrollIntoView();
       } catch (error) {
+        // Handle 404 error if the session doesn't exist
         if (error.response.status === 404 && location.href.includes("/s")) {
           // window.location.href = "/";
-          // console.log(404);
         }
-        // console.error("Error sending prompt:", error);
+        console.log(error);
       } finally {
         setLoading(false);
         setButtonDisabled(false);
       }
     };
     getFirstResponse();
-    // if (uuid) {
-    //   getFirstResponse();
-    //   console.log(session_UUID);
-    // } else {
-    //   console.log("no session id being recieved");
-    // }
-    // console.log("Adada ");
   }, [uuid, navigate]);
 
-  // const scrollToBottom = () => {
-  //   if (useChatContainer.current) {
-  //     useChatContainer.current.scrollTop =
-  //       useChatContainer.current.scrollHeight;
-  //   }
-  // };
+  // Scroll to the last message after history updates
   useEffect(() => {
     if (history && history.length > 0) {
       const id = "#historymodel" + (history.length - 1).toString();
-      // console.log("history id : " + id)
+
       const element = document.querySelector(id);
       if (element) {
         element.scrollIntoView();
       }
     }
   }, [history]);
+
+  // Scroll to the last message after response updates
   useEffect(() => {
     if (responseData && responseData.length > 0) {
       const id = "#model" + (responseData.length - 1).toString();
@@ -99,17 +89,24 @@ function ChatArea() {
       }
     }
   }, [responseData]);
+
+  // Reset response data when navigating
   useEffect(() => {
+    // Check if on session path
     if (location.href.includes("/s")) {
       setUUID(location.pathname.replace("/s/", ""));
     }
     setResponseData([]);
   }, [navigate, location]);
+
+  // Create a new session
   const createSession = async () => {
+    // Don't create a new session if one already exists
     if (uuid) {
       return;
     }
     try {
+      // Send a POST request to create a new session
       const res = await axios.post(
         server + "/sessions/new-session",
         { prompt },
@@ -117,12 +114,13 @@ function ChatArea() {
           withCredentials: true,
         }
       );
-      // console.log(res);
+
+      // Extract the session ID from the response
       const ses_uuid_revieved = res.data.sessionId;
       if (ses_uuid_revieved) {
-        // console.log(ses_uuid_revieved);
         setUUID(ses_uuid_revieved);
 
+        // Navigate to the new session path
         navigate(`/s/${ses_uuid_revieved}`, { replace: true });
         return ses_uuid_revieved;
       }
@@ -131,52 +129,56 @@ function ChatArea() {
       return null;
     }
   };
+
+  // Create an anonymous session
   const createAnonymousSession = async () => {
+    // Don't create a new anonymous session if one already exists
     if (anonymousUUID) {
       return;
     }
     try {
+      // Send a POST request to create an anonymous session
       const res = await axios.post(
         server + "/sessions/create-anonymous-session"
       );
       const anon_res_id = res.data.anonTokenId;
-      // console.log("anon id res: " + anon_res_id);
+
       setAnonymousUUID(res.data.anonTokenId);
       return anon_res_id;
     } catch (error) {
       console.log(error);
-      // window.location.href = "/";
     }
   };
 
+  // Handle sending the prompt
   const handlePromptSend = async (e) => {
     e.preventDefault();
     setLoading(true);
 
+    // Don't send empty prompt
     if (prompt.trim() === "") {
       setButtonDisabled(true);
       setLoading(false);
       return;
     }
+    // Get session ID or anonymous ID
     let sessionId = uuid;
     let anonymousId = anonymousUUID;
-    // Reset prompt input after sending the message
+    // Reset prompt input after sending
     setPrompt("");
     setRows(1);
 
     try {
       setButtonDisabled(true);
 
-      // Check if user is authenticated, create session if necessary
+      // Create session if necessary
       if (user && !uuid) {
         sessionId = await createSession();
       } else if (!user && !anonymousUUID) {
         anonymousId = await createAnonymousSession();
       }
 
-      // console.log("checking in sending prompt anonymousId :  " + anonymousId);
-      // console.log("checking in sending prompt sessionId :  " + sessionId);
-
+      // Send prompt to the server
       let res;
       if (anonymousId) {
         res = await axios.post(
@@ -195,14 +197,13 @@ function ChatArea() {
         );
       }
 
-      // console.log(res.data);
+      // Update response data
       setResponseData((prevData) => [...prevData, ...res.data]);
     } catch (error) {
       console.error("Error sending prompt:", error);
     } finally {
       setLoading(false);
       setButtonDisabled(false);
-      // console.log(history.length);
     }
   };
 
@@ -219,7 +220,6 @@ function ChatArea() {
                 return (
                   <UserMessageComponent
                     key={index + "History"}
-                    // id={msg.role + " " + index + "History"}
                     id={"history" + msg.role + index}
                     message={msg.parts[0].text}
                   />
@@ -228,7 +228,6 @@ function ChatArea() {
                 return (
                   <ClientMessageComponent
                     key={index + "History"}
-                    // id={msg.role + " " + index + "History"}
                     id={"history" + msg.role + index}
                     message={msg.parts[0].text}
                   />
@@ -240,7 +239,6 @@ function ChatArea() {
               return (
                 <UserMessageComponent
                   key={index}
-                  // id={msg.role + " " + index}
                   id={msg.role + index}
                   message={msg.message}
                 />
@@ -249,7 +247,6 @@ function ChatArea() {
               return (
                 <ClientMessageComponent
                   key={index}
-                  // id={msg.role + " " + index}
                   id={msg.role + index}
                   message={msg.message}
                 />

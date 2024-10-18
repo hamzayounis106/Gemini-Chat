@@ -8,9 +8,9 @@ import { UserContext } from "../App";
 function Chat() {
   const user = useContext(UserContext);
   useEffect(() => {
-    // console.log("chat refresh");
+
   },[user]);
-  // console.log(user);
+
   return (
     <>
       <div className="flex relative w-full h-screen justify-center bg-gradient-to-tl bg-[#0D1117]">

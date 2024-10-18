@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
 
 function ChatNamebar({ title, uuid, deleteChat }) {
+  // limiting chat title to specific number of characters
   const getTrimmedTitle = (title) => {
     return title.length > 26 ? title.substring(0, 23) + "..." : title;
   };

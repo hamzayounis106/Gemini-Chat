@@ -1,3 +1,5 @@
+//This component was just to test api, not required in final project
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";

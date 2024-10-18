@@ -1,12 +1,11 @@
+//this is not being used anywhere currently ")"
+
 import React, { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { FaRegCopy } from "react-icons/fa6";
 import { TiTick } from "react-icons/ti";
-import {
-
-  coldarkDark,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
+import { coldarkDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 // import "github-markdown-css/github-markdown.css";
 
 function AILiveResponse({ message, id }) {
@@ -25,7 +24,7 @@ function AILiveResponse({ message, id }) {
     let delay;
     parts = message.split(" ");
     // console.log(parts);
-    delay = 1
+    delay = 1;
     const interval = setInterval(() => {
       if (index < parts.length) {
         setDisplayedMessage(

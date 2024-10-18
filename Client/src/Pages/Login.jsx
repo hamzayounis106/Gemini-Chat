@@ -6,6 +6,8 @@ import { jwtDecode } from "jwt-decode";
 function Login() {
   const server = import.meta.env.VITE_SERVER_URL;
   const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+  // Handling Login with google
   const handelLogin = async (googleData) => {
     const userData = jwtDecode(googleData);
     console.log(userData);
@@ -22,7 +24,7 @@ function Login() {
 
       if (res) {
         console.log(res.data);
-        window.location.href="/"
+        window.location.href = "/";
       }
     } catch (error) {
       console.log(error);

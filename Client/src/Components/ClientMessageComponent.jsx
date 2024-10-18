@@ -3,21 +3,21 @@ import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { FaRegCopy } from "react-icons/fa6";
 import { TiTick } from "react-icons/ti";
-import {
- 
-  coldarkDark,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
-
+import { coldarkDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 function ClientMessageComponent({ message, id }) {
   const [copyIcon, setCopyIcon] = useState(<FaRegCopy />);
+
+  // changing the copy icon once code is  copied
   const copyAlert = () => {
     setCopyIcon(<TiTick />);
     setTimeout(() => {
       setCopyIcon(<FaRegCopy />);
     }, 1000);
   };
-  const codeRef = useRef(null); // Reference to the code block
+
+  // Reference to the code block
+  const codeRef = useRef(null);
 
   return (
     <>
@@ -35,7 +35,8 @@ function ClientMessageComponent({ message, id }) {
                       ref={codeRef} // Attach ref
                     >
                       <SyntaxHighlighter
-                        style={coldarkDark} className="oldData"
+                        style={coldarkDark}
+                        className="oldData"
                         language={match[1]}
                         PreTag="div"
                         {...props}
