@@ -22,7 +22,7 @@ function ClientMessageComponent({ message, id }) {
   return (
     <>
       <div id={id} className="">
-        <div className="flex items-end self-end justify-start max-w-[80vw] p-5 py-2 text-white rounded-lg ">
+        <div className="flex items-end self-end justify-start w-full sm:max-w-[80vw] sm:p-5 py-2 text-white rounded-lg ">
           <div className="markdown-body">
             <ReactMarkdown
               className={"w-full "}

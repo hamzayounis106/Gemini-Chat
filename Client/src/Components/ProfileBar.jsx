@@ -8,6 +8,7 @@ function ProfileBar() {
 
   //Handle dropdown visibilty Function
   const toggleDropdown = () => {
+    // console.log(!dropdownVisible)
     setDropdownVisible(!dropdownVisible);
   };
   //Handle Plan upgrade Function
@@ -34,7 +35,7 @@ function ProfileBar() {
 
   return (
     <>
-      <div className="absolute flex items-center justify-between top-5 right-5">
+      <div className="flex items-start justify-between sm:items-center sm:absolute sm:top-5 sm:right-5">
         <div className="relative">
           <img
             src={user.profile_image}
@@ -44,8 +45,9 @@ function ProfileBar() {
           />
           {dropdownVisible && (
             <div
+            onClick={toggleDropdown}
               onMouseLeave={toggleDropdown}
-              className="absolute right-0 z-10 w-48 mt-2 bg-gray-700 rounded-md shadow-lg"
+              className="absolute left-11 sm:right-0 z-10 w-48 mt-2 bg-gray-700 rounded-md shadow-lg sm:top-0 top-[-40px]"
             >
               <ul className="py-1">
                 {user.plan === "Free" ? (

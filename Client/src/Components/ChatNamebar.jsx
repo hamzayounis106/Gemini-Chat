@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
 
-function ChatNamebar({ title, uuid, deleteChat }) {
+function ChatNamebar({ title, uuid, deleteChat,switchSidebar }) {
   // limiting chat title to specific number of characters
   const getTrimmedTitle = (title) => {
     return title.length > 26 ? title.substring(0, 23) + "..." : title;
@@ -10,7 +10,7 @@ function ChatNamebar({ title, uuid, deleteChat }) {
 
   return (
     <>
-      <div className="relative flex items-center justify-center w-full namePlate group">
+      <div onClick={switchSidebar} className="relative flex items-center justify-center w-full namePlate group">
         <MdDelete
           onClick={() => deleteChat(uuid)}
           title="Delete CHat"

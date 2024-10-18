@@ -209,10 +209,10 @@ function ChatArea() {
 
   return (
     <>
-      <div className="max-w-[80%] w-full h-full flex justify-center flex-col bg-transparent items-center">
+      <div className="  max-w-[100%] lg:max-w-[100%] w-full h-full flex justify-end md:justify-center flex-col bg-transparent items-center">
         <div
           ref={useChatContainer}
-          className="h-[75%] px-4 oldData overflow-y-auto overflow-hidden w-[80%] gap-3 flex flex-col relative"
+          className=" h-[68%] lg:h-[75%] px-4 oldData overflow-y-auto overflow-hidden w-[95%] md:w-[80%] gap-3 flex flex-col relative"
         >
           {history &&
             history.map((msg, index) => {
@@ -256,7 +256,7 @@ function ChatArea() {
         </div>
 
         <div className="h-[20%] w-full flex items-center  flex-col justify-center">
-          <div className="flex items-start mb-5 w-[80%] ">
+          <div className="flex items-start mb-5 w-[95%] md:w-[80%] ">
             {loading && (
               <>
                 <div className="loader"></div>

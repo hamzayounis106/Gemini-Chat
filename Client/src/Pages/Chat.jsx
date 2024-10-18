@@ -7,18 +7,19 @@ import { UserContext } from "../App";
 
 function Chat() {
   const user = useContext(UserContext);
-  useEffect(() => {
-
-  },[user]);
+  useEffect(() => {}, [user]);
 
   return (
     <>
       <div className="flex relative w-full h-screen justify-center bg-gradient-to-tl bg-[#0D1117]">
         {user ? <SideBar /> : null}
-        {user ? <ProfileBar /> : null}
+        <div className="hidden sm:flex"> {user ? <ProfileBar /> : null}</div>
         {!user ? <Login /> : null}
 
-        <ChatArea />
+        <div className=" w-full sm:w-[70%] md:w-[100%]">
+          {" "}
+          <ChatArea />
+        </div>
       </div>
     </>
   );
