@@ -35,7 +35,7 @@ function App() {
     };
     checkAuth();
 
-    console.log("app js refresh");
+    // console.log("app js refresh");
   }, [navigate,location]);
 
   return (

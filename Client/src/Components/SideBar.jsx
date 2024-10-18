@@ -27,12 +27,12 @@ function SideBar() {
         setChats((prevChats) => prevChats.filter((chat) => chat.uuid !== uuid));
         
       }
-      console.log("Deleting Chat response : " + res);
+      // console.log("Deleting Chat response : " + res);
     } catch (error) {
       console.log("Deleting Chat response error : " + error);
     }
   };
-  console.log(chats);
+  // console.log(chats);
   return (
     <>
       <div className="max-w-[20%] w-full max-h-full bg-[#0c0f14] border-r-2 border-[#94a3b833] flex justify-start items-center pt-2 flex-col gap-5">

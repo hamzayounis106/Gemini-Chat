@@ -5,7 +5,7 @@ import UserMessageComponent from "./UserMessageComponent";
 import ClientMessageComponent from "./ClientMessageComponent";
 import { UserContext } from "../App";
 import { useContext } from "react";
-import AILiveResponse from "./AILiveResponse";
+
 import { useLocation, useNavigate } from "react-router-dom";
 function ChatArea() {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ function ChatArea() {
   }, [user]);
   useEffect(() => {
     if (!location.href.includes("/s")) {
-      console.log("no uuid to get history, returning");
+      // console.log("no uuid to get history, returning");
       setHistory([]);
       return;
     }
@@ -46,14 +46,18 @@ function ChatArea() {
             withCredentials: true,
           }
         );
-        console.log(res);
+        // console.log(res);
         setHistory(res.data.history);
+        // console.log(res.data.history.length - 1);
+        // document
+        //   .querySelector(`#model${res.data.history.length - 1}`)
+        //   .scrollIntoView();
       } catch (error) {
         if (error.response.status === 404 && location.href.includes("/s")) {
           // window.location.href = "/";
-          console.log(404);
+          // console.log(404);
         }
-        console.error("Error sending prompt:", error);
+        // console.error("Error sending prompt:", error);
       } finally {
         setLoading(false);
         setButtonDisabled(false);
@@ -69,16 +73,32 @@ function ChatArea() {
     // console.log("Adada ");
   }, [uuid, navigate]);
 
-  const scrollToBottom = () => {
-    if (useChatContainer.current) {
-      useChatContainer.current.scrollTop =
-        useChatContainer.current.scrollHeight;
-    }
-  };
-
+  // const scrollToBottom = () => {
+  //   if (useChatContainer.current) {
+  //     useChatContainer.current.scrollTop =
+  //       useChatContainer.current.scrollHeight;
+  //   }
+  // };
   useEffect(() => {
-    scrollToBottom();
-  }, [responseData, history]);
+    if (history && history.length > 0) {
+      const id = "#historymodel" + (history.length - 1).toString();
+      // console.log("history id : " + id)
+      const element = document.querySelector(id);
+      if (element) {
+        element.scrollIntoView();
+      }
+    }
+  }, [history]);
+  useEffect(() => {
+    if (responseData && responseData.length > 0) {
+      const id = "#model" + (responseData.length - 1).toString();
+
+      const element = document.querySelector(id);
+      if (element) {
+        element.scrollIntoView();
+      }
+    }
+  }, [responseData]);
   useEffect(() => {
     if (location.href.includes("/s")) {
       setUUID(location.pathname.replace("/s/", ""));
@@ -97,10 +117,10 @@ function ChatArea() {
           withCredentials: true,
         }
       );
-      console.log(res);
+      // console.log(res);
       const ses_uuid_revieved = res.data.sessionId;
       if (ses_uuid_revieved) {
-        console.log(ses_uuid_revieved);
+        // console.log(ses_uuid_revieved);
         setUUID(ses_uuid_revieved);
 
         navigate(`/s/${ses_uuid_revieved}`, { replace: true });
@@ -154,8 +174,8 @@ function ChatArea() {
         anonymousId = await createAnonymousSession();
       }
 
-      console.log("checking in sending prompt anonymousId :  " + anonymousId);
-      console.log("checking in sending prompt sessionId :  " + sessionId);
+      // console.log("checking in sending prompt anonymousId :  " + anonymousId);
+      // console.log("checking in sending prompt sessionId :  " + sessionId);
 
       let res;
       if (anonymousId) {
@@ -175,13 +195,14 @@ function ChatArea() {
         );
       }
 
-      console.log(res.data);
+      // console.log(res.data);
       setResponseData((prevData) => [...prevData, ...res.data]);
     } catch (error) {
       console.error("Error sending prompt:", error);
     } finally {
       setLoading(false);
       setButtonDisabled(false);
+      // console.log(history.length);
     }
   };
 
@@ -198,7 +219,8 @@ function ChatArea() {
                 return (
                   <UserMessageComponent
                     key={index + "History"}
-                    id={msg.role + " " + index + "History"}
+                    // id={msg.role + " " + index + "History"}
+                    id={"history" + msg.role + index}
                     message={msg.parts[0].text}
                   />
                 );
@@ -206,7 +228,8 @@ function ChatArea() {
                 return (
                   <ClientMessageComponent
                     key={index + "History"}
-                    id={msg.role + " " + index + "History"}
+                    // id={msg.role + " " + index + "History"}
+                    id={"history" + msg.role + index}
                     message={msg.parts[0].text}
                   />
                 );
@@ -217,7 +240,8 @@ function ChatArea() {
               return (
                 <UserMessageComponent
                   key={index}
-                  id={msg.role + " " + index}
+                  // id={msg.role + " " + index}
+                  id={msg.role + index}
                   message={msg.message}
                 />
               );
@@ -225,7 +249,8 @@ function ChatArea() {
               return (
                 <ClientMessageComponent
                   key={index}
-                  id={msg.role + " " + index}
+                  // id={msg.role + " " + index}
+                  id={msg.role + index}
                   message={msg.message}
                 />
               );
@@ -245,7 +270,10 @@ function ChatArea() {
             onSubmit={handlePromptSend}
             className="flex items-center w-[80%] "
           >
-            <div className=" bg-[#19212c] border-none relative p-5 flex w-full overflow-hidden border rounded-xl">
+            <div
+              id="input"
+              className=" bg-[#19212c] border-none relative p-5 flex w-full overflow-hidden border rounded-xl"
+            >
               <textarea
                 dir="auto"
                 rows={rows}

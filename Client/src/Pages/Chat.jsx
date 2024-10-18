@@ -8,7 +8,7 @@ import { UserContext } from "../App";
 function Chat() {
   const user = useContext(UserContext);
   useEffect(() => {
-    console.log("chat refresh");
+    // console.log("chat refresh");
   },[user]);
   // console.log(user);
   return (

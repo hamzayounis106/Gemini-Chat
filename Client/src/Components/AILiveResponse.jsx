@@ -4,12 +4,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { FaRegCopy } from "react-icons/fa6";
 import { TiTick } from "react-icons/ti";
 import {
-  darcula,
-  vs,
-  vscDarkPlus,
-  atomDark,
-  a11yDark,
-  dark,
+
   coldarkDark,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
 // import "github-markdown-css/github-markdown.css";
