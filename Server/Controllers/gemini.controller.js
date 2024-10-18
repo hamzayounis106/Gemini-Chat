@@ -74,9 +74,7 @@ export const getHistory = async (req, res) => {
     const { id } = req.id;
     const user = await User.findById(id);
     if (!user) {
-      throw new Error(
-        "User not found in userLoggedSessions while creating session"
-      );
+      throw new Error("User not found in getHistory");
     }
     if (!session_UUID) {
       return res
@@ -86,7 +84,9 @@ export const getHistory = async (req, res) => {
     try {
       let session = await Chat.findOne({ uuid: session_UUID });
       if (session) {
-        updateLastUsedTempChat(session_UUID);
+        // updateLastUsedTempChat(session_UUID);
+        session.lastUsed = Date.now();
+        await session.save();
         return res
           .status(200)
           .json({ success: true, history: session.history });
@@ -125,5 +125,36 @@ export const getHistory = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const deleteChat = async (req, res) => {
+  const { uuid } = req.body;
+  if (!uuid) {
+    console.log("UUID not found in request header while deleting post");
+    return res.status(404).json({
+      success: false,
+      message: "UUID not found in request header while deleting post",
+    });
+  }
+  try {
+    const chat = await Chat.findOneAndDelete({ uuid: uuid });
+    if (!chat) {
+      return res.status(404).json({
+        success: false,
+        message: "Chat not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Chat deleted Succefully!",
+    });
+  } catch (error) {
+    console.error("Error deleting chat:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };

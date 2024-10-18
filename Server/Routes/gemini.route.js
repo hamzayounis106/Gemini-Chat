@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  deleteChat,
   getHistory,
   sendPrompt,
   test,
@@ -8,7 +9,8 @@ import { verifyToken } from "../Middleware/verifyToken.js";
 import { verifyTokenConditional } from "../Middleware/verifyTokenConditional.js";
 const router = express.Router();
 router.get("/test", test);
-router.post("/sendPrompt",verifyTokenConditional, sendPrompt);
+router.post("/sendPrompt", verifyTokenConditional, sendPrompt);
 router.post("/getHistory", verifyTokenConditional, getHistory);
+router.post("/delete-chat", verifyToken, deleteChat); //only for logged in users
 // router.post("/get-user-chats", verifyToken, getUserChats);
 export default router;

@@ -1,13 +1,37 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import ChatNamebar from "./ChatNamebar";
 import { IoMdAddCircle } from "react-icons/io";
 import { useContext } from "react";
 import { UserContext } from "../App";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 function SideBar() {
+  const navigate = useNavigate()
+  const server = import.meta.env.VITE_SERVER_URL;
   const user = useContext(UserContext);
-
-  let chats = user.chats;
+  const [chats, setChats] = useState(user.chats || []);
+  useEffect(() => {
+    setChats(user.chats);
+  }, [user.chats]);
+  const handleChatDelete = async (uuid) => {
+    try {
+      const res = await axios.post(
+        server + "/geminiRoutes/delete-chat",
+        { uuid },
+        {
+          withCredentials: true,
+        }
+      );
+      if (res.status === 200) {
+        navigate("/")
+        setChats((prevChats) => prevChats.filter((chat) => chat.uuid !== uuid));
+        
+      }
+      console.log("Deleting Chat response : " + res);
+    } catch (error) {
+      console.log("Deleting Chat response error : " + error);
+    }
+  };
   console.log(chats);
   return (
     <>
@@ -26,10 +50,14 @@ function SideBar() {
         </Link>
         <div className="flex oldData  overflow-hidden   hover:overflow-y-auto  h-[85%] flex-col items-center justify-start w-full gap-2 ">
           {chats &&
-         
             chats.map((chat, key) => {
               return (
-                <ChatNamebar title={chat.title} key={key} uuid={chat.uuid} />
+                <ChatNamebar
+                  deleteChat={handleChatDelete}
+                  title={chat.title}
+                  key={key}
+                  uuid={chat.uuid}
+                />
               );
             })}
 

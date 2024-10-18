@@ -39,12 +39,19 @@ ChatScheema.pre("save", async function (next) {
   }
   next();
 });
-ChatScheema.post("remove", async function (doc) {
-  await mongoose.model("User").updateOne(
-    { _id: doc.user },
+ChatScheema.post("findOneAndDelete", async function (doc, next) {
+  if (doc) {
+    console.log("deleteOne from post: " + doc._id);
 
-    { $pull: { chats: { id: doc._id } } }
-  );
+    await mongoose.model("User").updateOne(
+      { _id: doc.user },
+      { $pull: { chats: { id: doc._id } } }
+    );
+  } else{
+    console.log("Nd doc is found")
+  }
+  next();
 });
+
 const Chat = mongoose.model("Chat", ChatScheema);
 export default Chat;
