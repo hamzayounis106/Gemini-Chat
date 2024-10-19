@@ -12,16 +12,19 @@ env.config();
 
 const app = express();
 //Middlewares
-app.use(cookieParser());
+
 app.use(express.json());
 
 app.use(
   cors({
     origin: [
       "https://gemini-chat-theta-two.vercel.app",
+      "https://gemini-chat-theta-two.vercel.app/",
       process.env.CLIENT_URL,
     ],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 // app.use(
@@ -35,7 +38,7 @@ app.use(
 //     allowedHeaders: ["Content-Type", "Authorization"], // Allow headers for preflight
 //   })
 // );
-
+app.use(cookieParser());
 //Routes
 app.use("/authRoutes", authRoutes);
 app.use("/geminiRoutes", geminiRoutes);
