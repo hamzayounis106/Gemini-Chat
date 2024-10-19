@@ -100,7 +100,7 @@ export const google_callback = async (req, res) => {
 
 export const checkAuth = async (req, res) => {
   const { id } = req.id;
-  // console.log(id);
+  console.log(id);
   try {
     const user = await User.findOne({ _id: id });
     if (!user) {

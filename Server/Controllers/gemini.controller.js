@@ -19,7 +19,7 @@ export const sendPrompt = async (req, res) => {
   if (req.id) {
     const { id } = req.id;
 
-    if (!session_UUID) {
+    if (!session_UUID ) {
       return res
         .status(400)
         .json({ success: false, message: "No session uid received" });
