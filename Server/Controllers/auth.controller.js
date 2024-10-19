@@ -104,6 +104,7 @@ export const checkAuth = async (req, res) => {
   try {
     const user = await User.findOne({ _id: id });
     if (!user) {
+      console.log("user not found")
       return res
         .status(401)
         .json({ success: false, message: "user not found" });
