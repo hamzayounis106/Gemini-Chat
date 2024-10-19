@@ -146,11 +146,11 @@ function ChatArea() {
         }
       );
       const anon_res_id = res.data.anonTokenId;
-
+      console.log("Annonymus session res: " + res);
       setAnonymousUUID(res.data.anonTokenId);
       return anon_res_id;
     } catch (error) {
-      console.log(error);
+      console.log("error crating Annonymus session  : " + error);
     }
   };
 
@@ -200,7 +200,7 @@ function ChatArea() {
           { withCredentials: true }
         );
       }
-
+      console.log("Prompt session res: " + res);
       // Update response data
       setResponseData((prevData) => [...prevData, ...res.data]);
     } catch (error) {
