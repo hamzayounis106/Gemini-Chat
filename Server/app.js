@@ -15,18 +15,15 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  cors({
-    origin: [
-      "https://gemini-chat-theta-two.vercel.app",
-      "https://gemini-chat-theta-two.vercel.app/",
-      process.env.CLIENT_URL,
-    ],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+const corsOptions = {
+  origin: ["https://gemini-chat-theta-two.vercel.app", process.env.CLIENT_URL],
+  credentials: true, // Allow sending cookies
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"], // Allow headers for preflight
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 // app.use(
 //   cors({
 //     origin: [
