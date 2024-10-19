@@ -29,8 +29,8 @@ function App() {
         }
       } catch (error) {
         console.log(error);
-        if (location.href.includes("/s") && error.response.status === 403) {
-          window.location.href = "/";
+        if (window.location.href.includes("/s") && error?.response?.status === 403) {
+          window.location.assign("/");
         }
       }
     };
