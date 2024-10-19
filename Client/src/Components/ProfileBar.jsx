@@ -8,7 +8,6 @@ function ProfileBar() {
 
   //Handle dropdown visibilty Function
   const toggleDropdown = () => {
-    // console.log(!dropdownVisible)
     setDropdownVisible(!dropdownVisible);
   };
   //Handle Plan upgrade Function
