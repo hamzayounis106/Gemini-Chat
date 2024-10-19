@@ -1,8 +1,11 @@
 import { mongoose } from "mongoose";
 const options = {
-  connectTimeoutMS: 30000,
-  socketTimeoutMS: 45000,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  connectTimeoutMS: 30000, 
+  socketTimeoutMS: 45000, 
 };
+
 export const connectDb = async () => {
   try {
     const con = await mongoose.connect(process.env.MONGO_URL, options);
