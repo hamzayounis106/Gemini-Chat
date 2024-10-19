@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 export const verifyTokenConditional = async (req, res, next) => {
   const { auth_token } = req.cookies;
   if (!auth_token) {
-    console.log("In verifyTokenConditional.js the authtoke is null ")
+    // console.log("In verifyTokenConditional.js the authtoke is null ")
     req.id = null;
     next();
   }
