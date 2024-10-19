@@ -9,13 +9,15 @@
 // export const getAllSessions = () => {
 //   return sessions;
 // };
+import { connectDb } from "../db/connectionsdb.js";
 import { creatChatTitle } from "../Gemini/titleCreation.js";
 import Chat from "../Models/Chat.logged.js";
 import TempChat from "../Models/tempChat.js";
 import User from "../Models/User.model.js";
 
 export const addSession = async (uu_session_id) => {
-  console.log("Creating annonymus session for : " + uu_session_id)
+  console.log("Creating annonymus session for : " + uu_session_id);
+  connectDb();
   try {
     if (uu_session_id) {
       const session = new TempChat({ uuid: uu_session_id });
