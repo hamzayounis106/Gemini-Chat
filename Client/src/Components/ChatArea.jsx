@@ -139,7 +139,11 @@ function ChatArea() {
     try {
       // Send a POST request to create an anonymous session
       const res = await axios.post(
-        server + "/sessions/create-anonymous-session"
+        server + "/sessions/create-anonymous-session",
+        {},
+        {
+          withCredentials: true,
+        }
       );
       const anon_res_id = res.data.anonTokenId;
 
