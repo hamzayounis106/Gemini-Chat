@@ -40,7 +40,10 @@ app.use(
 app.use("/authRoutes", authRoutes);
 app.use("/geminiRoutes", geminiRoutes);
 app.use("/sessions", sessionRoutes);
-
+app.get("/hand-shake", async (req, res) => {
+  connectDb();
+  console.log("Hand Shake made");
+});
 app.get("/", (req, res) => {
   res.send("This is the sever /");
 });

@@ -14,6 +14,19 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    const handShake = async () => {
+      try {
+        await axios.get(
+          server + "/hand-shake",
+          {},
+          {
+            withCredentials: true,
+          }
+        );
+      } catch (error) {
+        console.log("Handshake request error: " + error);
+      }
+    };
     const checkAuth = async () => {
       try {
         const res = await axios.post(
@@ -29,11 +42,15 @@ function App() {
         }
       } catch (error) {
         console.log(error);
-        if (window.location.href.includes("/s") && error?.response?.status === 403) {
+        if (
+          window.location.href.includes("/s") &&
+          error?.response?.status === 403
+        ) {
           window.location.assign("/");
         }
       }
     };
+    handShake();
     checkAuth();
   }, [navigate, location]);
 
