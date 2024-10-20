@@ -34,11 +34,11 @@ export const sendPrompt = async (req, res) => {
 
       //If user is logged in
 
-      reply = await promptBasedRunLoggedIn(prompt, session_UUID, id);
+      reply =  promptBasedRunLoggedIn(prompt, session_UUID, id);
     } else {
       //If user is anonymous
 
-      reply = await promptBasedRun(prompt, anonymousUUID);
+      reply =  promptBasedRun(prompt, anonymousUUID);
     }
     if (reply.success === false) {
       return res.status(404).json(reply);

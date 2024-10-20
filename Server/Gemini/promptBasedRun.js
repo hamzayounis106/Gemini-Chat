@@ -35,7 +35,10 @@ export const promptBasedRun = async (prompt, anonymousUUID) => {
 
     return text;
   } catch (error) {
-    return error.message;
+    return {
+      success: false,
+      message: error.message,
+    };
   }
 };
 export const promptBasedRunLoggedIn = async (prompt, session_UUID, id) => {
@@ -56,6 +59,9 @@ export const promptBasedRunLoggedIn = async (prompt, session_UUID, id) => {
     await session.save();
     return text;
   } catch (error) {
-    return error.message;
+    return {
+      success: false,
+      message: error.message,
+    };
   }
 };

@@ -42,7 +42,7 @@ app.use("/geminiRoutes", geminiRoutes);
 app.use("/sessions", sessionRoutes);
 app.get("/hand-shake", async (req, res) => {
   try {
-    connectDb();
+    // connectDb();
     console.log("Hand Shake made");
     return res
       .status(200)
