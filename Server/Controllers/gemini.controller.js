@@ -21,7 +21,7 @@ export const sendPrompt = async (req, res) => {
 
     // Catch
 
-    if (!session_UUID || !anonymousUUID || !prompt) {
+    if ((!session_UUID && !anonymousUUID) || !prompt) {
       return res.status(400).json({
         success: false,
         message: "!session_UUID || !anonymousUUID || !prompt",
