@@ -21,10 +21,14 @@ export const sendPrompt = async (req, res) => {
 
     // Catch
 
-    if (!session_UUID && !anonymousUUID && !prompt) {
-      return res
-        .status(400)
-        .json({ success: false, message: "No session uid received" });
+    if (!session_UUID || !anonymousUUID || !prompt) {
+      return res.status(400).json({
+        success: false,
+        message: "!session_UUID || !anonymousUUID || !prompt",
+        session_UUID,
+        anonymousUUID,
+        prompt,
+      });
     }
 
     let reply = null;
@@ -42,9 +46,8 @@ export const sendPrompt = async (req, res) => {
     }
     if (reply.success === false) {
       console.log(reply);
-      return res.status(404).json(reply);
+      return res.status(500).json(reply);
     }
-  
 
     const data = [
       {

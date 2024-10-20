@@ -17,7 +17,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", safe });
 export const promptBasedRun = async (prompt, anonymousUUID) => {
   try {
     let session = await TempChat.findOne({ uuid: anonymousUUID });
-    if (!session) {
+    if (!session || !prompt ) {
       return {
         success: false,
         message: "no session found in promptBasedRun",
@@ -32,9 +32,10 @@ export const promptBasedRun = async (prompt, anonymousUUID) => {
     session.lastUsed = Date.now();
     session.history = history;
     await session.save();
-console.log(text)
+    console.log(text);
     return text;
   } catch (error) {
+    console.log(error);
     return {
       success: false,
       message: error.message,
