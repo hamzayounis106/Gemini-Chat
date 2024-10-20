@@ -43,15 +43,15 @@ app.use("/sessions", sessionRoutes);
 app.get("/hand-shake", async (req, res) => {
   try {
     connectDb();
+    console.log("Hand Shake made");
     return res
       .status(200)
-      .json({ sucess: false, message: "HandShake with database OKAY" });
+      .json({ sucess: true, message: "HandShake with database OKAY" });
   } catch (error) {
     return res
       .status(500)
       .json({ sucess: false, message: "HandShake with database failed" });
   }
-  console.log("Hand Shake made");
 });
 app.get("/", (req, res) => {
   res.send("This is the sever /");
