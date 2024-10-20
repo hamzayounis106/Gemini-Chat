@@ -34,15 +34,17 @@ export const sendPrompt = async (req, res) => {
 
       //If user is logged in
 
-      reply =  promptBasedRunLoggedIn(prompt, session_UUID, id);
+      reply = promptBasedRunLoggedIn(prompt, session_UUID, id);
     } else {
       //If user is anonymous
 
-      reply =  promptBasedRun(prompt, anonymousUUID);
+      reply = promptBasedRun(prompt, anonymousUUID);
     }
     if (reply.success === false) {
+      console.log(reply);
       return res.status(404).json(reply);
     }
+  
 
     const data = [
       {
@@ -54,7 +56,7 @@ export const sendPrompt = async (req, res) => {
         message: reply,
       },
     ];
-
+    console.log(data);
     res.send(data);
   } catch (error) {
     console.error("Error in sendPrompt:", error);
