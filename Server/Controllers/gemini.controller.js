@@ -14,23 +14,50 @@ export const test = async (req, res) => {
   res.send(text);
 };
 export const sendPrompt = async (req, res) => {
-  let session_UUID = req.query.s;
-  let anonymousUUID = req.query.a;
-  if (req.id) {
-    const { id } = req.id;
+  try {
+    let session_UUID = req.query.s;
+    let anonymousUUID = req.query.a;
 
-    if (!session_UUID ) {
-      return res
-        .status(400)
-        .json({ success: false, message: "No session uid received" });
+    if (req.id) {
+      const { id } = req.id;
+
+      if (!session_UUID) {
+        return res
+          .status(400)
+          .json({ success: false, message: "No session uid received" });
+      }
+
+      const prompt = req.body.prompt;
+      const reply = await promptBasedRunLoggedIn(prompt, session_UUID, id);
+      if (!reply) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Session not found" });
+      }
+
+      const data = [
+        {
+          role: "user",
+          message: prompt,
+        },
+        {
+          role: "model",
+          message: reply,
+        },
+      ];
+
+      res.send(data);
+      return;
     }
+
     const prompt = req.body.prompt;
-    const reply = await promptBasedRunLoggedIn(prompt, session_UUID, id);
+    const reply = await promptBasedRun(prompt, anonymousUUID);
     if (!reply) {
       return res
         .status(404)
         .json({ success: false, message: "Session not found" });
     }
+
     const data = [
       {
         role: "user",
@@ -42,30 +69,11 @@ export const sendPrompt = async (req, res) => {
       },
     ];
 
-    // console.log(data);
     res.send(data);
-    return;
+  } catch (error) {
+    console.error("Error in sendPrompt:", error);
+    res.status(500).json({ success: false, message: "Internal server error", error: error.message });
   }
-  const prompt = req.body.prompt;
-  const reply = await promptBasedRun(prompt, anonymousUUID);
-  if (!reply) {
-    return res
-      .status(404)
-      .json({ success: false, message: "Session not found" });
-  }
-  const data = [
-    {
-      role: "user",
-      message: prompt,
-    },
-    {
-      role: "model",
-      message: reply,
-    },
-  ];
-
-  // console.log(data);
-  res.send(data);
 };
 export const getHistory = async (req, res) => {
   let session_UUID = req.query.s;

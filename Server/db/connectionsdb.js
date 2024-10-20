@@ -1,9 +1,7 @@
 import { mongoose } from "mongoose";
 const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  connectTimeoutMS: 30000, 
-  socketTimeoutMS: 45000, 
+  connectTimeoutMS: 70000,
+  socketTimeoutMS: 70000,
 };
 
 export const connectDb = async () => {
