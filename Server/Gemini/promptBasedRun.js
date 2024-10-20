@@ -18,7 +18,10 @@ export const promptBasedRun = async (prompt, anonymousUUID) => {
   try {
     let session = await TempChat.findOne({ uuid: anonymousUUID });
     if (!session) {
-      return null;
+      return {
+        success: false,
+        message: "no session found in promptBasedRun",
+      };
     }
 
     let history = session.history;
@@ -39,7 +42,10 @@ export const promptBasedRunLoggedIn = async (prompt, session_UUID, id) => {
   try {
     let session = await Chat.findOne({ uuid: session_UUID });
     if (!session) {
-      return null;
+      return {
+        success: false,
+        message: "no session found in promptBasedRunLoggedIn",
+      };
     }
     let history = session.history;
     const chat = model.startChat({ history });

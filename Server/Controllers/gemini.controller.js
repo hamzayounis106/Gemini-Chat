@@ -40,10 +40,8 @@ export const sendPrompt = async (req, res) => {
 
       reply = await promptBasedRun(prompt, anonymousUUID);
     }
-    if (!reply) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Reply not created" });
+    if (reply.success === false) {
+      return res.status(404).json(reply);
     }
 
     const data = [
