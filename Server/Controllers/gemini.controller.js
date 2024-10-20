@@ -17,45 +17,33 @@ export const sendPrompt = async (req, res) => {
   try {
     let session_UUID = req.query.s;
     let anonymousUUID = req.query.a;
+    let prompt = req.body.prompt;
+
+    // Catch
+
+    if (!session_UUID && !anonymousUUID && !prompt) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No session uid received" });
+    }
+
+    let reply = null;
 
     if (req.id) {
       const { id } = req.id;
 
-      if (!session_UUID) {
-        return res
-          .status(400)
-          .json({ success: false, message: "No session uid received" });
-      }
+      //If user is logged in
 
-      const prompt = req.body.prompt;
-      const reply = await promptBasedRunLoggedIn(prompt, session_UUID, id);
-      if (!reply) {
-        return res
-          .status(404)
-          .json({ success: false, message: "Session not found" });
-      }
+      reply = await promptBasedRunLoggedIn(prompt, session_UUID, id);
+    } else {
+      //If user is anonymous
 
-      const data = [
-        {
-          role: "user",
-          message: prompt,
-        },
-        {
-          role: "model",
-          message: reply,
-        },
-      ];
-
-      res.send(data);
-      return;
+      reply = await promptBasedRun(prompt, anonymousUUID);
     }
-
-    const prompt = req.body.prompt;
-    const reply = await promptBasedRun(prompt, anonymousUUID);
     if (!reply) {
       return res
         .status(404)
-        .json({ success: false, message: "Session not found" });
+        .json({ success: false, message: "Reply not created" });
     }
 
     const data = [
@@ -72,7 +60,11 @@ export const sendPrompt = async (req, res) => {
     res.send(data);
   } catch (error) {
     console.error("Error in sendPrompt:", error);
-    res.status(500).json({ success: false, message: "Internal server error", error: error.message });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 export const getHistory = async (req, res) => {
