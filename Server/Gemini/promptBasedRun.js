@@ -32,7 +32,7 @@ export const promptBasedRun = async (prompt, anonymousUUID) => {
     session.lastUsed = Date.now();
     session.history = history;
     await session.save();
-
+console.log(text)
     return text;
   } catch (error) {
     return {
