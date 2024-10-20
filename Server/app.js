@@ -41,7 +41,16 @@ app.use("/authRoutes", authRoutes);
 app.use("/geminiRoutes", geminiRoutes);
 app.use("/sessions", sessionRoutes);
 app.get("/hand-shake", async (req, res) => {
-  connectDb();
+  try {
+    connectDb();
+    return res
+      .status(200)
+      .json({ sucess: false, message: "HandShake with database OKAY" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ sucess: false, message: "HandShake with database failed" });
+  }
   console.log("Hand Shake made");
 });
 app.get("/", (req, res) => {
