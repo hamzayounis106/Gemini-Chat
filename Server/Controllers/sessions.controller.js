@@ -23,17 +23,18 @@ export const newSession = async (req, res) => {
         prompt,
       });
     }
-    await addUserloggedSessions(session_id, id, prompt);
+    const sessionRes = await addUserloggedSessions(session_id, id, prompt);
+    if (sessionRes.success === false) {
+      res.status(400).json({
+        sessionRes,
+      });
+    }
+
     res.status(200).json({ sessionId: session_id });
     return;
   }
 
-  const sessionRes = await addSession(session_id);
-  if (sessionRes.success === false) {
-    res.status(400).json({
-      sessionRes,
-    });
-  }
+  await addSession(session_id);
 
   res.status(200).json({ anonTokenId: session_id });
 };
