@@ -9,8 +9,8 @@
 // export const getAllSessions = () => {
 //   return sessions;
 // };
-import { connectDb } from "../db/connectionsdb.js";
-import { creatChatTitle } from "../Gemini/titleCreation.js";
+
+import { creatChatTitle } from "../Controllers/gemini.controller.js";
 import Chat from "../Models/Chat.logged.js";
 import TempChat from "../Models/tempChat.js";
 import User from "../Models/User.model.js";
