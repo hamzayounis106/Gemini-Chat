@@ -16,10 +16,10 @@ export const creatChatTitle = async (prompt) => {
 
     const res = await result.response;
     title = await res.text();
+    history = [];
+    return title;
   } catch (error) {
     console.log(error.message);
     return null;
   }
-  history = [];
-  return title;
 };

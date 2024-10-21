@@ -17,12 +17,10 @@ import User from "../Models/User.model.js";
 
 export const addSession = async (uu_session_id) => {
   console.log("Creating annonymus session for : " + uu_session_id);
-  connectDb();
+
   try {
-    if (uu_session_id) {
-      const session = new TempChat({ uuid: uu_session_id });
-      await session.save();
-    }
+    const session = new TempChat({ uuid: uu_session_id });
+    await session.save();
   } catch (error) {
     console.log("Error creating temp chat session : " + error);
   }
@@ -40,11 +38,13 @@ export const getAllSessions = async () => {
 };
 export const addUserloggedSessions = async (uu_session_id, userId, prompt) => {
   const titleChat = await creatChatTitle(prompt);
+  if (!titleChat) {
+    return { success: false, message: "Unable to create TitleChat" };
+  }
   const user = await User.findById(userId);
   if (!user) {
-    throw new Error(
-      "User not found in userLoggedSessions while creating session"
-    );
+
+    return { success: false, message: "User not found" };
   }
 
   try {
@@ -55,7 +55,9 @@ export const addUserloggedSessions = async (uu_session_id, userId, prompt) => {
       title: titleChat,
     });
     await loggedInSession.save();
+    return { success: true, message: "Session Created" };
   } catch (error) {
     console.log("Error creating logged in session: " + error);
+    return { success: false, message: "Unable to create session" };
   }
 };
