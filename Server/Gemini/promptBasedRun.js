@@ -66,3 +66,18 @@ export const promptBasedRunLoggedIn = async (prompt, session_UUID, id) => {
     };
   }
 };
+export const creatChatTitle = async (prompt) => {
+  // let history = [];
+  const chat = model.startChat([]);
+  try {
+    const promptMessage = `Generate a short, positive conversation title with exactly 2-3 words, based on the following content: "${prompt}". Avoid using quotation marks or extra words.`;
+
+    const result = await chat.sendMessage(promptMessage);
+    const res = await result.response;
+    const title = await res.text();
+    return title;
+  } catch (error) {
+    console.log(error.message);
+    return null;
+  }
+};

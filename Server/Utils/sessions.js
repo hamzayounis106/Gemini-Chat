@@ -10,7 +10,8 @@
 //   return sessions;
 // };
 
-import { creatChatTitle } from "../Controllers/gemini.controller.js";
+
+import { creatChatTitle } from "../Gemini/promptBasedRun.js";
 import Chat from "../Models/Chat.logged.js";
 import TempChat from "../Models/tempChat.js";
 import User from "../Models/User.model.js";
