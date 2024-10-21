@@ -1,0 +1,10 @@
+frontend:
+    path: ./
+    publish: node app.js
+    scripts:
+        build: npm run build
+        deploy: npm install
+    subdomain: Gemini-Chat
+name: Gemini-Chat
+region: us-east-1
+yamlVersion: 2
