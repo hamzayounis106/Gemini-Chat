@@ -4,7 +4,7 @@ frontend:
     scripts:
         build: npm run build
         deploy: npm install
-    subdomain: Gemini-Chat
-name: Gemini-Chat
+    subdomain: Gemini-Chat-Api
+name: Gemini-Chat-Api
 region: us-east-1
 yamlVersion: 2
