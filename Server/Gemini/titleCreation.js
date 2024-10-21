@@ -6,9 +6,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 export const creatChatTitle = async (prompt) => {
   let title = "";
-  if (!prompt) {
-    return null;
-  }
+
   let history = [];
   const chat = model.startChat({ history });
   try {

@@ -40,37 +40,21 @@ export const getAllSessions = async () => {
 };
 export const addUserloggedSessions = async (uu_session_id, userId, prompt) => {
   const titleChat = await creatChatTitle(prompt);
-  // console.log(titleChat);
-  if (!userId) {
-    throw new Error(
-      "User Id not found in userLoggedSessions while creating session"
-    );
-  }
   const user = await User.findById(userId);
   if (!user) {
     throw new Error(
       "User not found in userLoggedSessions while creating session"
     );
   }
-  if (!uu_session_id) {
-    throw new Error(
-      "uu_session_id not found in userLoggedSessions while creating session"
-    );
-  }
 
   try {
-    if (uu_session_id) {
-      console.log(user._id);
-      const loggedInSession = new Chat({
-        uuid: uu_session_id,
-        user: user._id,
-        title: titleChat,
-      });
-      // console.log(loggedInSession);
-      await loggedInSession.save();
-      // user.chats.unshift({ chatID: uu_session_id, title: titleChat });
-      // await user.save();
-    }
+    console.log(user._id);
+    const loggedInSession = new Chat({
+      uuid: uu_session_id,
+      user: user._id,
+      title: titleChat,
+    });
+    await loggedInSession.save();
   } catch (error) {
     console.log("Error creating logged in session: " + error);
   }
